@@ -12,6 +12,8 @@ const jwt = require('jsonwebtoken');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const domainModels = {};
+
 const cors = require('cors');
 const corsOptions = {
   origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500','file://'],
@@ -111,6 +113,20 @@ app.post('/check_user', async (req, res) => {
   }
 });
 
+app.get('/profile/:email', (req, res) => {
+  const { email } = req.params;
+  Detail.findOne({ EmailID: email })
+    .then(details => {
+      if (details) {
+        res.status(200).json(details)
+      } else {
+        res.status(404).json({ message: "User not found" })
+      }
+    }).catch(error => {
+      res.status(500).json({ message: error.message })
+    })
+})
+
 app.get('/get_domains/:email', authenticateToken,(req, res) => {
   const { email } = req.params;
   Detail.findOne({ EmailID: email })
@@ -129,31 +145,44 @@ app.get('/get_domains/:email', authenticateToken,(req, res) => {
 });
 
 
-app.get('/profile/:email',authenticateToken, (req, res) => {
-  const { email } = req.params;
-  Detail.findOne({ EmailID: email })
-    .then(details => {
-      res.status(200).json(details)
-    }).catch(error => {
-      res.status(500).json({ message: error.message })
-    })
-})
 
-app.put('/put_domains/:email',authenticateToken, (req, res) => {
+
+app.put('/put_domains/:email', (req, res) => {
   const { email } = req.params;
-  Detail.findOneAndUpdate({ EmailID: email }, req.body)
-    .then(details => {
-      if (!details) {
-        return res.status(404).json({ message: "Student not found" });
+  const domains = req.body.Domains;
+
+  Detail.findOneAndUpdate(
+    { EmailID: email },
+    { Domains: domains },
+    { new: true }
+  ).then(updatedDetail => {
+    const updatePromises = domains.map(domain => {
+      if (!domainModels[domain]) {
+        const schema = new mongoose.Schema({ EmailID: String });
+        domainModels[domain] = mongoose.model(domain, schema);
       }
-      Detail.findOne({ EmailID: email })
-        .then(updatedDetail => {
-          res.status(200).json(updatedDetail)
-        })
-    }).catch(error => {
-      res.status(500).json
-    })
-})
+      const model = domainModels[domain];
+
+      return model.findOne({ EmailID: email })
+        .then(existingDoc => {
+          if (existingDoc) {
+            return Promise.resolve();
+          } else {
+            return model.create({ EmailID: email });
+          }
+        });
+    });
+
+    return Promise.all(updatePromises)
+      .then(() => {
+        res.status(200).json(updatedDetail);
+      });
+  }).catch(error => {
+    console.error("Error updating domains:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  });
+});
+
 
 
 module.exports = app;
