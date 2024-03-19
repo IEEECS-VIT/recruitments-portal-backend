@@ -1,24 +1,22 @@
 require('dotenv').config();
 const mongoURL = process.env.mongoURL;
+
 const mongoose = require('mongoose');
 const Detail = require('./models/studentModel');
-// const mongoURL2 = process.env.mongoURL2;
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(mongoURL);
 const express = require("express");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+
 const cors = require('cors');
-
 const corsOptions = {
-  origin: 
-  ['http://127.0.0.1:5173'
-  ,'http://127.0.0.1:5500'
-],
+  origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500','file://'],
+  credentials: true,
 };
-
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
@@ -42,7 +40,6 @@ async function searchMail(emailId) {
     const database = client.db('Members');
     const collection = database.collection('Details');
     const queryResult = await collection.findOne({ EmailID: emailId });
-    // console.log(queryResult);
 
     if (queryResult) {
       ans = 1;
@@ -57,59 +54,56 @@ async function searchMail(emailId) {
     return ans;
   }
 }
-
 function authenticateToken(req, res, next) {
-  const token = req.headers['authorization'];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({"message" : "Unauthorized: Token missing"});
+    return res.status(401).json({ "message": "Unauthorized: Token missing" });
   }
-
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       if (err.name === 'TokenExpiredError') {
-        return res.status(401).json({"message" : "Unauthorized: Token expired"});
+        return res.status(401).json({ "message": "Unauthorized: Token expired" });
       } else {
-        return res.status(403).json({"message" : "Forbidden: Invalid token"});
+        return res.status(403).json({ "message": "Forbidden: Invalid token" });
       }
     }
-
-    // Check if decoded exists and has email property
     if (!decoded || !decoded.email) {
-      return res.status(403).json({"message" : "Forbidden: Token does not contain email"});
+      return res.status(403).json({ "message": "Forbidden: Token does not contain email" });
     }
-
-    // Extract user identifier from the decoded token
     const userEmailFromToken = decoded.email;
-
-    // Check if the token matches with the current user's email
     if (userEmailFromToken !== req.params.email) {
-      return res.status(403).json({"message" : "Forbidden: Token does not match user's email"});
+      return res.status(403).json({ "message": "Forbidden: Token does not match user's email" });
     }
-
     req.user = decoded;
     next();
   });
 }
 
-
+function generateAccessToken(email) {
+  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '2d' });
+}
 
 
 app.post('/check_user', async (req, res) => {
   const email = req.body.email;
-  const user = { username: req.body.email };
-  const accessToken = jwt.sign(user, process.env.JWT_SECRET);
   try {
     const val = await searchMail(email);
     if (val === 1) {
       console.log("Found!");
-      res.status(200).json({"message" : "Found!",accesstoken: accessToken})
+      const accessToken = generateAccessToken(email);
+      res.cookie('accessToken', accessToken, { 
+        // httpOnly : true,
+        // sameSite: 'none'
+      });
+      res.status(200).json({"message" : "Found!","accessToken": accessToken})
     } else if (val === 0) {
       console.log("Not Found!");
-      res.status(404).json({"message" : "Not Found!",accesstoken : accessToken})
+      res.status(404).json({"message" : "Not Found!"})
     } else if (val === 2) {
       console.log("DB Error!");
-      res.status(500).json({"message" : "DB Error!",accesstoken : accessToken})
+      res.status(500).json({"message" : "DB Error!"})
     }
   } catch (error) {
     console.error("Error occurred:", error);

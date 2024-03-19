@@ -92,6 +92,14 @@
         }
       }
 
+      function getAccessToken() {
+        return localStorage.getItem('accessToken');
+      }
+
+      function setAccessToken(accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+      }
+
       document.getElementById('check-user-btn').addEventListener('click', async function () {
         const email = document.getElementById('email').value;
         const checkUserUrl = `${serverUrl}/check_user`;
@@ -99,21 +107,21 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getAccessToken()
           },
           body: JSON.stringify({ email }),
         };
         const checkUserResult = await fetchData(checkUserUrl, checkUserOptions);
-        localStorage.setItem('accessToken', checkUserResult.accesstoken);
+        setAccessToken(checkUserResult.accessToken)
         displayResult(checkUserResult);
       });
 
       document.getElementById('get-domains-btn').addEventListener('click', async function () {
         const email = document.getElementById('email').value;
-        const accessToken =  localStorage.getItem('accessToken'); // Add access token here if needed
         const getDomainsUrl = `${serverUrl}/get_domains/${email}`;
         const getDomainsOptions = {
           headers: {
-            'Authorization': accessToken,
+            'Authorization': `Bearer ${getAccessToken()}`
           },
         };
         const getDomainsResult = await fetchData(getDomainsUrl, getDomainsOptions);
@@ -122,11 +130,10 @@
 
       document.getElementById('get-profile-btn').addEventListener('click', async function () {
         const email = document.getElementById('email').value;
-        const accessToken = localStorage.getItem('accessToken'); // Add access token here if needed
         const getProfileUrl = `${serverUrl}/profile/${email}`;
         const getProfileOptions = {
           headers: {
-            'Authorization': accessToken,
+            'Authorization': `Bearer ${getAccessToken()}`
           },
         };
         const getProfileResult = await fetchData(getProfileUrl, getProfileOptions);
@@ -135,12 +142,11 @@
 
       document.getElementById('update-domains-btn').addEventListener('click', async function () {
         const email = document.getElementById('email').value;
-        const accessToken = localStorage.getItem('accessToken'); // Add access token here if needed
         const updateDomainsUrl = `${serverUrl}/put_domains/${email}`;
         const updateDomainsOptions = {
           method: 'PUT',
           headers: {
-            'Authorization': accessToken,
+            'Authorization': `Bearer ${getAccessToken()}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ /* Add update data here */ }),
@@ -155,5 +161,6 @@
       }
     });
   </script>
+
 </body>
 </html>
