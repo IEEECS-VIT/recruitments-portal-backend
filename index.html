@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+</head>
+<body>
+
+    <h1>API Test</h1>
+    
+    <label for="emailInput">Enter an Email:</label>
+    <input type="email" id="emailInput" placeholder="Enter an email">
+    <button onclick="sendEmail()">Send Email</button>
+
+    <div id="response"></div>
+
+    <script>
+        function sendEmail() {
+            const emailInput = document.getElementById('emailInput');
+            const emailID = emailInput.value;
+
+            const apiUrl = 'http://localhost:4030/check_user'; 
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email : emailID }) 
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text(); 
+            })
+            .then(data => {
+                console.log(data);
+                document.getElementById('response').innerText = data; // Display response in HTML
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error occurred'; // Display error in HTML
+            });
+        }
+    </script>
+
+</body>
+</html>

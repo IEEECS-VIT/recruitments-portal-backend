@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/check_user",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/get_domains/:email",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/put_domains/:email",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/profile/:email",
+      "destination": "/api/server.js"
+    }
+  ]
+}

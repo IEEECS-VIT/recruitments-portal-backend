@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #form-container {
+      width: 50%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>API Test</h1>
+
+  <div id="form-container">
+    <form id="api-form">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      <button type="button" id="check-user-btn">Check User</button>
+      <button type="button" id="get-domains-btn">Get Domains</button>
+      <button type="button" id="get-profile-btn">Get Profile</button>
+      <button type="button" id="update-domains-btn">Update Domains</button>
+    </form>
+  </div>
+
+  <div id="output"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const serverUrl = 'http://localhost:4030';
+
+      async function fetchData(url, options) {
+        try {
+          const response = await fetch(url, options);
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          return { error: 'Error fetching data' };
+        }
+      }
+
+      document.getElementById('check-user-btn').addEventListener('click', async function () {
+        const email = document.getElementById('email').value;
+        const checkUserUrl = `${serverUrl}/check_user`;
+        const checkUserOptions = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        };
+        const checkUserResult = await fetchData(checkUserUrl, checkUserOptions);
+        localStorage.setItem('accessToken', checkUserResult.accesstoken);
+        displayResult(checkUserResult);
+      });
+
+      document.getElementById('get-domains-btn').addEventListener('click', async function () {
+        const email = document.getElementById('email').value;
+        const accessToken =  localStorage.getItem('accessToken'); // Add access token here if needed
+        const getDomainsUrl = `${serverUrl}/get_domains/${email}`;
+        const getDomainsOptions = {
+          headers: {
+            'Authorization': accessToken,
+          },
+        };
+        const getDomainsResult = await fetchData(getDomainsUrl, getDomainsOptions);
+        displayResult(getDomainsResult);
+      });
+
+      document.getElementById('get-profile-btn').addEventListener('click', async function () {
+        const email = document.getElementById('email').value;
+        const accessToken = localStorage.getItem('accessToken'); // Add access token here if needed
+        const getProfileUrl = `${serverUrl}/profile/${email}`;
+        const getProfileOptions = {
+          headers: {
+            'Authorization': accessToken,
+          },
+        };
+        const getProfileResult = await fetchData(getProfileUrl, getProfileOptions);
+        displayResult(getProfileResult);
+      });
+
+      document.getElementById('update-domains-btn').addEventListener('click', async function () {
+        const email = document.getElementById('email').value;
+        const accessToken = localStorage.getItem('accessToken'); // Add access token here if needed
+        const updateDomainsUrl = `${serverUrl}/put_domains/${email}`;
+        const updateDomainsOptions = {
+          method: 'PUT',
+          headers: {
+            'Authorization': accessToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ /* Add update data here */ }),
+        };
+        const updateDomainsResult = await fetchData(updateDomainsUrl, updateDomainsOptions);
+        displayResult(updateDomainsResult);
+      });
+
+      function displayResult(result) {
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+      }
+    });
+  </script>
+</body>
+</html>
