@@ -149,38 +149,56 @@ app.get('/get_domains/:email', authenticateToken,(req, res) => {
 
 app.put('/put_domains/:email', (req, res) => {
   const { email } = req.params;
-  const domains = req.body.Domains;
+  const newDomains = req.body.Domains;
 
-  Detail.findOneAndUpdate(
-    { EmailID: email },
-    { Domains: domains },
-    { new: true }
-  ).then(updatedDetail => {
-    const updatePromises = domains.map(domain => {
-      if (!domainModels[domain]) {
-        const schema = new mongoose.Schema({ EmailID: String });
-        domainModels[domain] = mongoose.model(domain, schema);
-      }
-      const model = domainModels[domain];
+  Detail.findOne({ EmailID: email })
+    .then(detail => {
+      const oldDomains = detail.Domains;
 
-      return model.findOne({ EmailID: email })
-        .then(existingDoc => {
-          if (existingDoc) {
-            return Promise.resolve();
-          } else {
-            return model.create({ EmailID: email });
-          }
-        });
-    });
-
-    return Promise.all(updatePromises)
-      .then(() => {
-        res.status(200).json(updatedDetail);
+      const deletePromises = oldDomains.map(domain => {
+        if (domainModels[domain]) {
+          const model = domainModels[domain];
+          return model.deleteOne({ EmailID: email });
+        }
+        return Promise.resolve();
       });
-  }).catch(error => {
-    console.error("Error updating domains:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  });
+
+      return Promise.all(deletePromises)
+        .then(() => {
+          return Detail.findOneAndUpdate(
+            { EmailID: email },
+            { Domains: newDomains },
+            { new: true }
+          );
+        })
+        .then(updatedDetail => {
+          const updatePromises = newDomains.map(domain => {
+            if (!domainModels[domain]) {
+              const schema = new mongoose.Schema({ EmailID: String });
+              domainModels[domain] = mongoose.model(domain, schema);
+            }
+            const model = domainModels[domain];
+
+            return model.findOne({ EmailID: email })
+              .then(existingDoc => {
+                if (existingDoc) {
+                  return Promise.resolve();
+                } else {
+                  return model.create({ EmailID: email });
+                }
+              });
+          });
+
+          return Promise.all(updatePromises)
+            .then(() => {
+              res.status(200).json(updatedDetail);
+            });
+        });
+    })
+    .catch(error => {
+      console.error("Error updating domains:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    });
 });
 
 
