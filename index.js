@@ -1,16 +1,24 @@
+const express = require("express");
+const mongoose = require('mongoose');
 require('dotenv').config();
 const mongoURL = process.env.mongoURL;
-
-const mongoose = require('mongoose');
-const Detail = require('./models/studentModel');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(mongoURL);
-const express = require("express");
+const Detail = require('./models/studentModel');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
+const responseRoute = require('./routes/responseRoute');
+const domainRoute = require('./routes/domainRoute')
+
 const app = express();
+
+app.use('/', responseRoute);
+app.use('/', domainRoute);
+
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 const domainModels = {};
 
@@ -20,7 +28,6 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 4030;
 mongoose.connect(process.env.mongoURL)
