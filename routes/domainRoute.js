@@ -1,11 +1,14 @@
 const express = require('express');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
+const pluralize = require('pluralize');
 
 const router = express.Router();
 
 router.get('/:domain', (req, res) => {
     let  { domain } = req.params;
-    domain += 's'
+    if (!pluralize.isPlural(domain)) {
+        domain = pluralize.plural(domain);
+    }
     const collection = mongoose.connection.collection(`${domain}`);
 
     collection.find().toArray()

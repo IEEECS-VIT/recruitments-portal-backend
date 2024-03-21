@@ -4,21 +4,19 @@ const responseSchema = mongoose.Schema({
         email: {
             type: String,
             required: true
-        },
-        response: [{        
-            domain: {
-                type: String,
-                required: true
-            },         
-            questions: [{
-                q: {
-                    type: String
-                },
-                ans: {
-                    type: String
-                }
-            }]
-        }]
+        },    
+        domain: {
+            type: String,
+            required: true
+        },         
+        questions: [{
+            q: {
+                type: String
+            },
+            ans: {
+                type: String
+            }
+        }]  
     }
 )
 

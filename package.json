@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-     "dev": "nodemon index.js"
+    "dev": "nodemon index.js"
   },
   "vercel-build": "echo hello vercel",
   "repository": {
@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.4.0",
     "mongoose": "^8.2.1",
+    "pluralize": "^8.0.0",
     "vercel": "^33.5.5"
   },
   "devDependencies": {
