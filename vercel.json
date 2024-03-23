@@ -16,6 +16,30 @@
     {
       "source": "/profile/:email",
       "destination": "/api/server.js"
+    },
+    {
+      "source": "/question/:domain/:email",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/eval/set_report",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/response/submit",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/response/get_time/:domain/:email",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/response/:email",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/:domain",
+      "destination": "/api/server.js"
     }
   ]
 }
