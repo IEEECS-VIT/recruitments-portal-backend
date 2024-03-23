@@ -6,13 +6,13 @@ const questionSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        type: {
-            type: String,
-            enum: ['subjective', 'mcq'],
-            required: true
-        },
-        question: [{
-            text: {
+        allQuestions: [{
+            type: {
+                type: String,
+                enum: ['subjective', 'mcq'],
+                required: true
+            },
+            question: {
                 type: String,
                 required: true
             },
@@ -20,9 +20,8 @@ const questionSchema = mongoose.Schema(
                 type: [String],
                 default: []
             }
-        }]
-        
-    },
+        }]       
+    }
 );
 
 const Question = mongoose.model('Question', questionSchema);
