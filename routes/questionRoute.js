@@ -21,7 +21,7 @@ router.post('/:domain/:email',authenticateToken,async  (req, res) => {
             const resp1 = new responses({
                 email: email,
                 domain: domain,
-                submissions : [],
+                submissions : [],   
                 startTime: startTime,
                 endTime :endTime,
                 submissionTime : ""
