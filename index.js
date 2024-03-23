@@ -166,7 +166,6 @@ app.put('/put_domains/:email', (req, res) => {
     .then(detail => {
       const oldDomains = detail.Domains;
 
-      // Delete old documents from subdomain collections
       const deletePromises = Object.keys(oldDomains).flatMap(domain => {
         return oldDomains[domain].map(subdomain => {
           const model = domainModels[subdomain];
@@ -177,7 +176,6 @@ app.put('/put_domains/:email', (req, res) => {
         });
       });
 
-      // Update main document with new domains
       return Promise.all(deletePromises)
         .then(() => {
           return Detail.findOneAndUpdate(
@@ -187,7 +185,6 @@ app.put('/put_domains/:email', (req, res) => {
           );
         })
         .then(updatedDetail => {
-          // Create new documents in subdomain collections
           const updatePromises = Object.keys(newDomains).flatMap(domain => {
             return newDomains[domain].map(subdomain => {
               if (!domainModels[subdomain]) {
