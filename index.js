@@ -158,62 +158,63 @@ app.get('/get_domains/:email', authenticateToken,(req, res) => {
 
 
 
-app.put('/put_domains/:email', (req, res) => {
+app.put('/put_domains/:email', async (req, res) => {
   const { email } = req.params;
   const newDomains = req.body.Domains;
 
-  Detail.findOne({ EmailID: email })
-    .then(detail => {
-      const oldDomains = detail.Domains;
+  try {
+    const detail = await Detail.findOne({ EmailID: email });
 
-      const deletePromises = Object.keys(oldDomains).flatMap(domain => {
-        return oldDomains[domain].map(subdomain => {
+    if (!detail || !detail.Domains || !newDomains) {
+      throw new Error('Document not found or Domains field is missing');
+    }
+
+    const oldDomains = detail.Domains;
+
+    // Delete old documents from subdomain collections
+    for (const domain of Object.keys(oldDomains)) {
+      const subdomains = oldDomains[domain];
+      if (Array.isArray(subdomains)) {
+        for (const subdomain of subdomains) {
           const model = domainModels[subdomain];
           if (model) {
-            return model.deleteOne({ EmailID: email });
+            await model.deleteOne({ EmailID: email });
           }
-          return Promise.resolve();
-        });
-      });
+        }
+      }
+    }
 
-      return Promise.all(deletePromises)
-        .then(() => {
-          return Detail.findOneAndUpdate(
-            { EmailID: email },
-            { Domains: newDomains },
-            { new: true }
-          );
-        })
-        .then(updatedDetail => {
-          const updatePromises = Object.keys(newDomains).flatMap(domain => {
-            return newDomains[domain].map(subdomain => {
-              if (!domainModels[subdomain]) {
-                const schema = new mongoose.Schema({ EmailID: String });
-                domainModels[subdomain] = mongoose.model(subdomain, schema);
-              }
-              const model = domainModels[subdomain];
+    // Update main document with new domains
+    const updatedDetail = await Detail.findOneAndUpdate(
+      { EmailID: email },
+      { Domains: newDomains },
+      { new: true }
+    );
 
-              return model.findOne({ EmailID: email })
-                .then(existingDoc => {
-                  if (existingDoc) {
-                    return Promise.resolve();
-                  } else {
-                    return model.create({ EmailID: email });
-                  }
-                });
-            });
-          });
+    // Create new documents in subdomain collections
+    for (const domain of Object.keys(newDomains)) {
+      const subdomains = newDomains[domain];
+      if (Array.isArray(subdomains)) {
+        for (const subdomain of subdomains) {
+          if (!domainModels[subdomain]) {
+            const schema = new mongoose.Schema({ EmailID: String });
+            domainModels[subdomain] = mongoose.model(subdomain, schema);
+          }
+          const model = domainModels[subdomain];
+          const existingDoc = await model.findOne({ EmailID: email });
+          if (!existingDoc) {
+            await model.create({ EmailID: email });
+          }
+        }
+      }
+    }
 
-          return Promise.all(updatePromises)
-            .then(() => {
-              res.status(200).json(updatedDetail);
-            });
-        });
-    })
-    .catch(error => {
-      console.error("Error updating domains:", error);
-      res.status(500).json({ message: "Internal Server Error" });
-    });
+    res.status(200).json(updatedDetail);
+  } catch (error) {
+    console.error("Error updating domains:", error);
+    console.error(error.stack); // Log the stack trace for detailed error information
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 
