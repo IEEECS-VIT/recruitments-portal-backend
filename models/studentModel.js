@@ -19,8 +19,15 @@ const studentSchema = mongoose.Schema(
             required: true
         },
         Domains: {
-            type: [String],
-            required: true
+            tech: {
+                type: [String]
+            },
+            design: {
+                type: [String]
+            },
+            management: {
+                type: [String]
+            }
         }
 }, {collection : 'Details'});
 
