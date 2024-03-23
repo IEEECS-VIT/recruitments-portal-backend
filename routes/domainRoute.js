@@ -1,16 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const pluralize = require('pluralize');
-
+const authenticateToken = require('./auth');
 const router = express.Router();
 
-router.get('/:domain', (req, res) => {
+router.get('/:domain',authenticateToken, (req, res) => {
     let  { domain } = req.params;
     if (!pluralize.isPlural(domain)) {
         domain = pluralize.plural(domain);
     }
     const collection = mongoose.connection.collection(`${domain}`);
-    console.log(collection);
     collection.find().toArray()
     .then(documents => {
         res.status(200).json(documents)

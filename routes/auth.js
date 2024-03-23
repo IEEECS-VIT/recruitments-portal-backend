@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -17,7 +19,7 @@ function authenticateToken(req, res, next) {
         return res.status(403).json({ "message": "Forbidden: Token does not contain email" });
       }
       const userEmailFromToken = decoded.email;
-      if (userEmailFromToken !== req.params.email) {
+      if (userEmailFromToken !== (req.params.email || req.body.email)) {
         return res.status(403).json({ "message": "Forbidden: Token does not match user's email" });
       }
       req.user = decoded;
