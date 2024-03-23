@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken');
 const responseRoute = require('./routes/responseRoute');
 const domainRoute = require('./routes/domainRoute');
 const questionRoute = require('./routes/questionRoute');
+const evalRoute = require('./routes/evalRoute');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 
 app.use('/response', responseRoute);
 app.use('/', domainRoute);
+app.use('/eval',evalRoute);
 app.use('/question', questionRoute);
 
 
@@ -171,7 +173,6 @@ app.put('/put_domains/:email', async (req, res) => {
 
     const oldDomains = detail.Domains;
 
-    // Delete old documents from subdomain collections
     for (const domain of Object.keys(oldDomains)) {
       const subdomains = oldDomains[domain];
       if (Array.isArray(subdomains)) {
@@ -184,14 +185,12 @@ app.put('/put_domains/:email', async (req, res) => {
       }
     }
 
-    // Update main document with new domains
     const updatedDetail = await Detail.findOneAndUpdate(
       { EmailID: email },
       { Domains: newDomains },
       { new: true }
     );
 
-    // Create new documents in subdomain collections
     for (const domain of Object.keys(newDomains)) {
       const subdomains = newDomains[domain];
       if (Array.isArray(subdomains)) {
@@ -212,7 +211,7 @@ app.put('/put_domains/:email', async (req, res) => {
     res.status(200).json(updatedDetail);
   } catch (error) {
     console.error("Error updating domains:", error);
-    console.error(error.stack); // Log the stack trace for detailed error information
+    console.error(error.stack); 
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

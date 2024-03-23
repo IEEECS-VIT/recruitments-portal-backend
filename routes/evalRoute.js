@@ -7,9 +7,10 @@ const router = express.Router();
 router.post("/set_report", async (req, res) => {
     const { result, email, round } = req.body;
     const update = {};
-    update["Report." + round] = result; // Construct the key dynamically
+    update["Report." + round] = result; 
 
     try {
+        console.log("Here");
         const updatedDetail = await Detail.findOneAndUpdate(
             { EmailID: email },
             { $set: update },

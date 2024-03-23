@@ -4,7 +4,7 @@ const authenticateToken = require("./auth");
 
 const router = express.Router();
 
-router.patch('/', authenticateToken, async (req, res) => {
+router.patch('/submit', authenticateToken, async (req, res) => {
     const { email, domain, questions } = req.body;
 
     try {

@@ -2,7 +2,6 @@ const express = require('express');
 const Question = require('../models/questionModel');
 const responses = require('../models/responseModel')
 const mongoose = require('mongoose');
-// const pluralize = require('pluralize');
 const authenticateToken = require("./auth")
 const router = express.Router();
 

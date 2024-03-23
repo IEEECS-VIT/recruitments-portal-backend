@@ -4,7 +4,7 @@ const pluralize = require('pluralize');
 const authenticateToken = require('./auth');
 const router = express.Router();
 
-router.get('/:domain',authenticateToken, (req, res) => {
+router.get('/:domain', (req, res) => {
     let  { domain } = req.params;
     if (!pluralize.isPlural(domain)) {
         domain = pluralize.plural(domain);
