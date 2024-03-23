@@ -166,12 +166,14 @@ app.put('/put_domains/:email', (req, res) => {
     .then(detail => {
       const oldDomains = detail.Domains;
 
-      const deletePromises = oldDomains.map(domain => {
-        if (domainModels[domain]) {
-          const model = domainModels[domain];
-          return model.deleteOne({ EmailID: email });
-        }
-        return Promise.resolve();
+      const deletePromises = Object.keys(oldDomains).flatMap(domain => {
+        return oldDomains[domain].map(subdomain => {
+          const model = domainModels[subdomain];
+          if (model) {
+            return model.deleteOne({ EmailID: email });
+          }
+          return Promise.resolve();
+        });
       });
 
       return Promise.all(deletePromises)
@@ -183,21 +185,23 @@ app.put('/put_domains/:email', (req, res) => {
           );
         })
         .then(updatedDetail => {
-          const updatePromises = newDomains.map(domain => {
-            if (!domainModels[domain]) {
-              const schema = new mongoose.Schema({ EmailID: String });
-              domainModels[domain] = mongoose.model(domain, schema);
-            }
-            const model = domainModels[domain];
+          const updatePromises = Object.keys(newDomains).flatMap(domain => {
+            return newDomains[domain].map(subdomain => {
+              if (!domainModels[subdomain]) {
+                const schema = new mongoose.Schema({ EmailID: String });
+                domainModels[subdomain] = mongoose.model(subdomain, schema);
+              }
+              const model = domainModels[subdomain];
 
-            return model.findOne({ EmailID: email })
-              .then(existingDoc => {
-                if (existingDoc) {
-                  return Promise.resolve();
-                } else {
-                  return model.create({ EmailID: email });
-                }
-              });
+              return model.findOne({ EmailID: email })
+                .then(existingDoc => {
+                  if (existingDoc) {
+                    return Promise.resolve();
+                  } else {
+                    return model.create({ EmailID: email });
+                  }
+                });
+            });
           });
 
           return Promise.all(updatePromises)
@@ -211,6 +215,7 @@ app.put('/put_domains/:email', (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     });
 });
+
 
 
 
