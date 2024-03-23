@@ -16,7 +16,17 @@ const responseSchema = mongoose.Schema({
             ans: {
                 type: String
             }
-        }]  
+        }],
+        startTime: {
+            type: String
+        },
+        submissionTime: {
+            type: String
+        },
+        endTime: {
+            type: String
+        }
+      
     }
 )
 
