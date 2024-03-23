@@ -28,6 +28,20 @@ const studentSchema = mongoose.Schema(
             management: {
                 type: [String]
             }
+        },
+        Report : {
+            round1 : {
+                type : Number,
+                default : 0
+            },
+            round2: {
+                type : Number,
+                default : 0
+            },
+            round3 : {
+                type : Number,
+                default : 0
+            },
         }
 }, {collection : 'Details'});
 
