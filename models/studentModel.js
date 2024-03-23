@@ -21,8 +21,25 @@ const studentSchema = mongoose.Schema(
         Domains: {
             type: [String],
             required: true
+        },
+        Results: {
+
+            round1: {
+                type: Number,
+                default: 0
+            },
+            round2: {
+                type: Number,
+                default: 0
+            },
+            round3: {
+                type: Number,
+                default: 0
+            }
+
+
         }
-}, {collection : 'Details'});
+    }, { collection: 'Details' });
 
 const Detail = mongoose.model('Details', studentSchema);
 
