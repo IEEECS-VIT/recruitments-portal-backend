@@ -14,12 +14,14 @@ const questionRoute = require('./routes/questionRoute');
 
 const app = express();
 
-app.use('/', responseRoute);
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+app.use('/response', responseRoute);
 app.use('/', domainRoute);
 app.use('/question', questionRoute);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 
 const domainModels = {};
