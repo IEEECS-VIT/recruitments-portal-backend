@@ -19,7 +19,7 @@ function authenticateToken(req, res, next) {
         return res.status(403).json({ "message": "Forbidden: Token does not contain email" });
       }
       const userEmailFromToken = decoded.email;
-      if (userEmailFromToken !== (req.params.email || req.body.email)) {
+      if (userEmailFromToken !== (req.body.email || req.params.email)) {
         return res.status(403).json({ "message": "Forbidden: Token does not match user's email" });
       }
       req.user = decoded;
