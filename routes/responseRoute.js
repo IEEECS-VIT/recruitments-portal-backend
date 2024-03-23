@@ -4,7 +4,7 @@ const Question = require('../models/questionModel');
 
 const router = express.Router();
 
-router.get('/response', (req, res) => {
+router.get('/question', (req, res) => {
     res.send("Hi")
 })
 

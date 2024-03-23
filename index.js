@@ -9,12 +9,14 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
 const responseRoute = require('./routes/responseRoute');
-const domainRoute = require('./routes/domainRoute')
+const domainRoute = require('./routes/domainRoute');
+const questionRoute = require('./routes/questionRoute');
 
 const app = express();
 
 app.use('/', responseRoute);
 app.use('/', domainRoute);
+app.use('/question', questionRoute);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
