@@ -10,7 +10,7 @@ router.get('/:domain', (req, res) => {
         domain = pluralize.plural(domain);
     }
     const collection = mongoose.connection.collection(`${domain}`);
-
+    console.log(collection);
     collection.find().toArray()
     .then(documents => {
         res.status(200).json(documents)
