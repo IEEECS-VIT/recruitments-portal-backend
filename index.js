@@ -126,7 +126,7 @@ app.post('/check_user', async (req, res) => {
   }
 });
 
-app.get('/profile/:email', (req, res) => {
+app.get('/profile/:email', authenticateToken, (req, res) => {
   const { email } = req.params;
   Detail.findOne({ EmailID: email })
     .then(details => {
