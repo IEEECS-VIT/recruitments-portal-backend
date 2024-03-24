@@ -160,9 +160,9 @@ app.get('/get_domains/:email', authenticateToken,(req, res) => {
 
 
 
-app.put('/put_domains/:email', async (req, res) => {
+app.put('/put_domain/:email/:domain', async (req, res) => {
   const { email } = req.params;
-  const newDomains = req.body.Domains;
+  const newSubdomains = req.body.Subdomains;
 
   try {
     const detail = await Detail.findOne({ EmailID: email });
@@ -187,7 +187,7 @@ app.put('/put_domains/:email', async (req, res) => {
 
     const updatedDetail = await Detail.findOneAndUpdate(
       { EmailID: email },
-      { Domains: newDomains },
+      { `Domain.${domain}`: newDomains },
       { new: true }
     );
 
