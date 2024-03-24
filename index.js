@@ -158,10 +158,9 @@ app.get('/get_domains/:email', authenticateToken,(req, res) => {
 });
 
 
-
-app.put('/put_domains/tech/:email', async (req, res) => {
-  const { email } = req.params;
-  const newTechDomains = req.body.tech || []
+app.put('/put_domains/:domain/:email', async (req, res) => {
+  const { email, domain } = req.params;
+  const newDomains = req.body[domain] || []
 
   try {
     let detail = await Detail.findOne({ EmailID: email });
@@ -171,23 +170,27 @@ app.put('/put_domains/tech/:email', async (req, res) => {
     }
 
     if (!detail.Domains) {
-      detail.Domains = { tech: [] };
+      detail.Domains = {};
     }
 
-    const oldTechDomains = detail.Domains.tech || [];
+    if (!detail.Domains[domain]) {
+      detail.Domains[domain] = [];
+    }
 
-    for (const domain of oldTechDomains) {
+    const oldDomains = detail.Domains[domain] || [];
+
+    for (const domain of oldDomains) {
       const model = domainModels[domain];
       if (model) {
         await model.deleteOne({ EmailID: email });
       }
     }
 
-    detail.Domains.tech = newTechDomains;
+    detail.Domains[domain] = newDomains;
     await detail.save();
     console.log('Detail document saved:', detail);
 
-    for (const domain of newTechDomains) {
+    for (const domain of newDomains) {
       if (!domainModels[domain]) {
         const schema = new mongoose.Schema({ EmailID: String });
         domainModels[domain] = mongoose.model(domain, schema);
@@ -202,7 +205,7 @@ app.put('/put_domains/tech/:email', async (req, res) => {
 
     res.status(200).json(detail);
   } catch (error) {
-    console.error("Error updating tech domains:", error);
+    console.error(`Error updating ${domain} domains:`, error);
     console.error(error.stack);
     res.status(500).json({ message: "Internal Server Error" });
   }
