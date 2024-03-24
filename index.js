@@ -15,6 +15,12 @@ const evalRoute = require('./routes/evalRoute');
 
 const app = express();
 
+const cors = require('cors');
+const corsOptions = {
+  origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500','http://127.0.0.1:3000','http://localhost:3000'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -28,20 +34,16 @@ app.use('/question', questionRoute);
 
 const domainModels = {};
 
-const cors = require('cors');
-const corsOptions = {
-  origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500','file://'],
-  credentials: true,
-};
-app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 4030;
+app.listen(PORT, () => {
+  console.log(`Port is running at: ${PORT}`)
+});
+
 mongoose.connect(process.env.mongoURL)
   .then(() => {
     console.log('connected to monogdb');
-    app.listen(PORT, () => {
-      console.log(`Port is running at: ${PORT}`)
-    });
+    
   }).catch((error) => {
     console.log(error)
   });
