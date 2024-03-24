@@ -155,6 +155,24 @@ Certainly! Below are the documentation for each of the provided routes:
   - `email` (string): Email of the user submitting the response.
   - `domain` (string): Domain associated with the response.
   - `questions` (array): Array of questions and their corresponding answers.
+    Example
+    ```json
+    {
+    "email": email,
+    "domain": domain,
+    "questions": [
+        {
+            "q": "What is your fav?",
+            "ans": "India"
+        },
+        {
+            "q": "What is your favorite food?",
+            "ans": "Pizza"
+        }
+    ]
+}
+    ```
+    
 - **Response**:
   - Success (200 OK):
     ```json
