@@ -12,7 +12,7 @@ const responseRoute = require('./routes/responseRoute');
 const domainRoute = require('./routes/domainRoute');
 const questionRoute = require('./routes/questionRoute');
 const evalRoute = require('./routes/evalRoute');
-
+const Response = require('./models/responseModel');
 const app = express();
 
 const cors = require('cors');
@@ -141,23 +141,42 @@ app.get('/profile/:email', authenticateToken, (req, res) => {
       res.status(500).json({ message: error.message })
     })
 })
-
-app.get('/get_domains/:email', authenticateToken,(req, res) => {
+app.get('/get_domains/:email', authenticateToken, async (req, res) => {
   const { email } = req.params;
-  Detail.findOne({ EmailID: email })
-    .then(details => {
-      if (details) {
-        const domains = details.Domains || [];
-        res.status(200).json(domains);
+
+  try {
+      const student = await Detail.findOne({ EmailID: email });
+
+      if (student) {
+          const domains = student.Domains || {};
+          const domainKeys = Object.keys(domains);
+          const domainInfo = {};
+          for (const domain of domainKeys) {
+              const subdomains = domains[domain];
+              const subdomainInfo = [];
+              for (const subdomain of subdomains) {
+                  const response = await Response.findOne({ email: email, domain: subdomain });
+
+                  if (response && response.submissionTime) {
+                      subdomainInfo.push({ subdomain: subdomain, completed: true });
+                  } else {
+                      subdomainInfo.push({ subdomain: subdomain, completed: false });
+                  }
+              }
+
+              domainInfo[domain] = subdomainInfo;
+          }
+
+          res.status(200).json(domainInfo);
       } else {
-        res.status(404).json({ message: "Details not found for the provided email" });
+          res.status(404).json({ message: "Details not found for the provided email" });
       }
-    })
-    .catch(error => {
+  } catch (error) {
       console.error("Error finding details:", error);
       res.status(500).json({ message: "An error occurred while fetching details" });
-    });
+  }
 });
+
 
 
 app.put('/put_domains/:domain/:email', async (req, res) => {
