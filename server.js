@@ -137,6 +137,7 @@ app.get('/profile/:email', authenticateToken, (req, res) => {
       res.status(500).json({ message: error.message })
     })
 })
+
 app.get('/get_domains/:email', authenticateToken, async (req, res) => {
   const { email } = req.params;
 
@@ -175,7 +176,7 @@ app.get('/get_domains/:email', authenticateToken, async (req, res) => {
 
 
 
-app.put('/put_domains/:domain/:email', async (req, res) => {
+app.put('/put_domains/:domain/:email',authenticateToken, async (req, res) => {
   const { email, domain } = req.params;
   const newDomains = req.body[domain] || []
 
