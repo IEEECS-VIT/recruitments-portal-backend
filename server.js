@@ -53,7 +53,6 @@ async function searchMail(emailId) {
     console.log("Connecting...");
     await client.connect();
     console.log("Connected !!");
-    console.log(emailId);
     const database = client.db('Members');
     const collection = database.collection('Details');
     const queryResult = await collection.findOne({ EmailID: emailId });
@@ -108,7 +107,6 @@ app.post('/check_user', async (req, res) => {
   try {
     const val = await searchMail(email);
     if (val === 1) {
-      console.log("Found!");
       const accessToken = generateAccessToken(email);
       res.cookie('accessToken', accessToken, { 
         // httpOnly : true,
@@ -116,10 +114,8 @@ app.post('/check_user', async (req, res) => {
       });
       res.status(200).json({"message" : "Found!","accessToken": accessToken})
     } else if (val === 0) {
-      console.log("Not Found!");
       res.status(404).json({"message" : "Not Found!"})
     } else if (val === 2) {
-      console.log("DB Error!");
       res.status(500).json({"message" : "DB Error!"})
     }
   } catch (error) {
@@ -209,7 +205,6 @@ app.put('/put_domains/:domain/:email', async (req, res) => {
 
     detail.Domains[domain] = newDomains;
     await detail.save();
-    console.log('Detail document saved:', detail);
 
     for (const domain of newDomains) {
       if (!domainModels[domain]) {
@@ -220,7 +215,6 @@ app.put('/put_domains/:domain/:email', async (req, res) => {
       const existingDoc = await model.findOne({ EmailID: email });
       if (!existingDoc) {
         const newDoc = await model.create({ EmailID: email });
-        console.log('New document created:', newDoc);
       }
     }
 
