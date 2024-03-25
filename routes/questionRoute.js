@@ -10,7 +10,6 @@ router.post('/:domain/:email',authenticateToken,async  (req, res) => {
     const {email } =  req.user;
     const collection = mongoose.connection.collection('responses');
         let response = await collection.findOne({ email:email, domain : domain} );
-        console.log(response);
         if (!response) {
                     
             const currentTime = new Date();

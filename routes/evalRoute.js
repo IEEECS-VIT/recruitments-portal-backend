@@ -10,7 +10,6 @@ router.post("/set_report", async (req, res) => {
     update["Report." + round] = result; 
 
     try {
-        console.log("Here");
         const updatedDetail = await Detail.findOneAndUpdate(
             { EmailID: email },
             { $set: update },
