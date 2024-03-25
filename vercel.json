@@ -10,7 +10,7 @@
       "destination": "/api/server.js"
     },
     {
-      "source": "/put_domains/:email",
+      "source": "/put_domains/:domain/:email",
       "destination": "/api/server.js"
     },
     {
