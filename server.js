@@ -8,6 +8,7 @@ const Detail = require('./models/studentModel');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
+const adminRoute = require('./routes/admin');
 const responseRoute = require('./routes/responseRoute');
 const domainRoute = require('./routes/domainRoute');
 const questionRoute = require('./routes/questionRoute');
@@ -24,7 +25,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+app.use('/admin', adminRoute);
 app.use('/response', responseRoute);
 app.use('/', domainRoute);
 app.use('/eval',evalRoute);

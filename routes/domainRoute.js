@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const pluralize = require('pluralize');
-const authenticateToken = require('./auth');
 const router = express.Router();
 
 router.get('/:domain', (req, res) => {
