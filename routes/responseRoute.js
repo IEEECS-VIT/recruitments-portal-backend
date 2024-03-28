@@ -1,13 +1,17 @@
 const express = require('express');
 const Response = require('../models/responseModel');
 const authenticateToken = require("./auth");
-
+const authenticateToken2 = require("./auth2");
 const router = express.Router();
 
 router.patch('/submit', authenticateToken, async (req, res) => {
     const { email, domain, questions } = req.body;
 
     try {
+        const checkExist = await Response.findOne({ email: email, domain: domain });
+        if (checkExist) { 
+            res.status(400).json({ message: 'Response already submitted' });
+        } else {
         const existingResponse = await Response.findOneAndUpdate(
             { email: email, domain: domain },
             {
@@ -16,12 +20,14 @@ router.patch('/submit', authenticateToken, async (req, res) => {
             },
             { new: true }
         );
+        
 
         if (existingResponse) {
             res.status(200).json({ message: 'Response recorded successfully' });
         } else {
             res.status(404).json({ message: 'Response not found' });
         }
+    }
     } catch (error) {
         res.status(500).json({ message: error.message });
         
@@ -43,7 +49,7 @@ router.get('/get_time/:domain/:email', async (req, res) => {
     }
 });
 
-router.get('/:email', authenticateToken, (req, res) => {
+router.get('/:email', authenticateToken2, (req, res) => {
     const { email } = req.params
     Response.find({ email: email })
         .then(responses => {

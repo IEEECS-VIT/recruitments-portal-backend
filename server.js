@@ -17,7 +17,7 @@ const app = express();
 
 const cors = require('cors');
 const corsOptions = {
-  origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500','http://127.0.0.1:3000','http://localhost:3000'],
+  origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500', 'http://127.0.0.1:3000', 'http://localhost:3000'],
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 
 app.use('/response', responseRoute);
 app.use('/', domainRoute);
-app.use('/eval',evalRoute);
+app.use('/eval', evalRoute);
 app.use('/question', questionRoute);
 
 
@@ -43,7 +43,7 @@ app.listen(PORT, () => {
 mongoose.connect(process.env.mongoURL)
   .then(() => {
     console.log('connected to monogdb');
-    
+
   }).catch((error) => {
     console.log(error)
   });
@@ -108,15 +108,15 @@ app.post('/check_user', async (req, res) => {
     const val = await searchMail(email);
     if (val === 1) {
       const accessToken = generateAccessToken(email);
-      res.cookie('accessToken', accessToken, { 
+      res.cookie('accessToken', accessToken, {
         // httpOnly : true,
         // sameSite: 'none'
       });
-      res.status(200).json({"message" : "Found!","accessToken": accessToken})
+      res.status(200).json({ "message": "Found!", "accessToken": accessToken })
     } else if (val === 0) {
-      res.status(404).json({"message" : "Not Found!"})
+      res.status(404).json({ "message": "Not Found!" })
     } else if (val === 2) {
-      res.status(500).json({"message" : "DB Error!"})
+      res.status(500).json({ "message": "DB Error!" })
     }
   } catch (error) {
     console.error("Error occurred:", error);
@@ -142,41 +142,41 @@ app.get('/get_domains/:email', authenticateToken, async (req, res) => {
   const { email } = req.params;
 
   try {
-      const student = await Detail.findOne({ EmailID: email });
+    const student = await Detail.findOne({ EmailID: email });
 
-      if (student) {
-          const domains = student.Domains || {};
-          const domainKeys = Object.keys(domains);
-          const domainInfo = {};
-          for (const domain of domainKeys) {
-              const subdomains = domains[domain];
-              const subdomainInfo = [];
-              for (const subdomain of subdomains) {
-                  const response = await Response.findOne({ email: email, domain: subdomain });
+    if (student) {
+      const domains = student.Domains || {};
+      const domainKeys = Object.keys(domains);
+      const domainInfo = {};
+      for (const domain of domainKeys) {
+        const subdomains = domains[domain];
+        const subdomainInfo = [];
+        for (const subdomain of subdomains) {
+          const response = await Response.findOne({ email: email, domain: subdomain });
 
-                  if (response && response.submissionTime) {
-                      subdomainInfo.push({ subdomain: subdomain, completed: true });
-                  } else {
-                      subdomainInfo.push({ subdomain: subdomain, completed: false });
-                  }
-              }
-
-              domainInfo[domain] = subdomainInfo;
+          if (response && response.submissionTime) {
+            subdomainInfo.push({ subdomain: subdomain, completed: true });
+          } else {
+            subdomainInfo.push({ subdomain: subdomain, completed: false });
           }
+        }
 
-          res.status(200).json(domainInfo);
-      } else {
-          res.status(404).json({ message: "Details not found for the provided email" });
+        domainInfo[domain] = subdomainInfo;
       }
+
+      res.status(200).json(domainInfo);
+    } else {
+      res.status(404).json({ message: "Details not found for the provided email" });
+    }
   } catch (error) {
-      console.error("Error finding details:", error);
-      res.status(500).json({ message: "An error occurred while fetching details" });
+    console.error("Error finding details:", error);
+    res.status(500).json({ message: "An error occurred while fetching details" });
   }
 });
 
 
 
-app.put('/put_domains/:domain/:email',authenticateToken, async (req, res) => {
+app.put('/put_domains/:domain/:email', authenticateToken, async (req, res) => {
   const { email, domain } = req.params;
   const newDomains = req.body[domain] || []
 
