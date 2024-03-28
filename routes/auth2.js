@@ -26,4 +26,4 @@ function authenticateToken2(req, res, next) {
       next();
     });
   }
-  module.exports = authenticateToken;
+  module.exports = authenticateToken2;
