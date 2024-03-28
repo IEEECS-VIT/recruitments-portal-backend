@@ -7,6 +7,7 @@ const client = new MongoClient(mongoURL);
 const Detail = require('./models/studentModel');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const responseRoute = require('./routes/responseRoute');
 const domainRoute = require('./routes/domainRoute');
@@ -15,6 +16,7 @@ const evalRoute = require('./routes/evalRoute');
 const Response = require('./models/responseModel');
 const app = express();
 
+app.use(cookieParser());
 const cors = require('cors');
 const corsOptions = {
   origin: ['http://127.0.0.1:5173', 'http://127.0.0.1:5500', 'http://127.0.0.1:3000', 'http://localhost:3000'],
