@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authenticateToken = require('./auth');
-const Detail = require('../models/studentModel')
+const Detail = require('../models/studentModel');
+const authAdmin = require('../middleware/authAdmin');
 const router = express.Router();
 
-router.post("/set_report", async (req, res) => {
+router.post("/set_report", authAdmin, async (req, res) => {
     const { result, email, round } = req.body;
     const update = {};
     update["Report." + round] = result; 

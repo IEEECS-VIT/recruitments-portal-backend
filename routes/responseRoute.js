@@ -2,6 +2,7 @@ const express = require('express');
 const Response = require('../models/responseModel');
 const authenticateToken = require("./auth");
 const authenticateToken2 = require("./auth2");
+const authAdmin = require('../middleware/authAdmin')
 const router = express.Router();
 
 router.patch('/submit', authenticateToken, async (req, res) => {
@@ -49,7 +50,7 @@ router.get('/get_time/:domain/:email', async (req, res) => {
     }
 });
 
-router.get('/:email', (req, res) => {
+router.get('/:email',authAdmin, (req, res) => {
     const { email } = req.params
     Response.find({ email: email })
         .then(responses => {
