@@ -4,6 +4,7 @@ function authenticateToken2(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     console.log(token);
+    console.log(req.body.email);
     if (!token) {
       return res.status(401).json({ "message": "Unauthorized: Token missing" });
     }
