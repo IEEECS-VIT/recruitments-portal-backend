@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const pluralize = require('pluralize');
-const authenticateToken = require('./auth');
 const router = express.Router();
+const authAdmin = require('../middleware/authAdmin')
 
-router.get('/:domain', (req, res) => {
+router.get('/:domain', authAdmin, (req, res) => {
     let  { domain } = req.params;
     if (!pluralize.isPlural(domain)) {
         domain = pluralize.plural(domain);
