@@ -49,7 +49,7 @@ router.get('/get_time/:domain/:email', async (req, res) => {
     }
 });
 
-router.get('/:email', authenticateToken2, (req, res) => {
+router.get('/:email', (req, res) => {
     const { email } = req.params
     Response.find({ email: email })
         .then(responses => {
