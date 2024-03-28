@@ -40,6 +40,14 @@
     {
       "source": "/:domain",
       "destination": "/api/index.js"
+    }, 
+    {
+      "source": "/admin/check-user",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/questions/:domain",
+      "destination": "/api/index.js"
     }
   ]
 }

@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
-const adminRoute = require('./routes/admin');
+const adminRoute = require('./routes/adminRoute');
 const responseRoute = require('./routes/responseRoute');
 const domainRoute = require('./routes/domainRoute');
 const questionRoute = require('./routes/questionRoute');
