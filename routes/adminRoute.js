@@ -4,10 +4,6 @@ const Question = require('../models/questionModel')
 const pluralize = require('pluralize')
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
-require('dotenv').config();
-const mongoURL = process.env.mongoURL;
-const { MongoClient } = require('mongodb');
-const client = new MongoClient(mongoURL);
 const router = express.Router();
 
 const cookieParser = require('cookie-parser');
@@ -16,7 +12,6 @@ router.use(cookieParser());
 router.post('/check-user', async (req, res) => {
     const { email } = req.body;
     console.log("Inside Admin");
-    await client.connect();
     Admin.findOne({ email: email })
         .then(admin => {
             if (!admin) {
@@ -38,7 +33,6 @@ router.post('/check-user', async (req, res) => {
             res.status(500).json({ message: "Internal Server Error", error: error.message });
         });
         
-    await client.close();
 });
 
 router.post('/questions/:domain',authAdmin, (req, res) => {

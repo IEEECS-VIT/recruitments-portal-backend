@@ -14,6 +14,7 @@ function authAdmin(req, res, next) {
 
     jwt.verify(token, process.env.JWT_SECRET_ADMIN, (err, decoded) => {
         if (err) {
+            console.log(err);
             return res.status(500).json({ message: 'Failed to authenticate token.' });
         }
 
