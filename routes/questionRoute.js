@@ -1,6 +1,7 @@
 const express = require('express');
 const Question = require('../models/questionModel');
-const responses = require('../models/responseModel')
+const responses = require('../models/responseModel');
+const Detail = require('../models/studentModel');
 const mongoose = require('mongoose');
 const authenticateToken = require("./auth")
 const router = express.Router();
@@ -11,7 +12,6 @@ router.post('/:domain/:email',authenticateToken,async  (req, res) => {
     const collection = mongoose.connection.collection('responses');
         let response = await collection.findOne({ email:email, domain : domain} );
         if (!response) {
-                    
             const currentTime = new Date();
             const futureTime = new Date(currentTime.getTime() + (20 * 60000));
             const startTime = currentTime.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -28,6 +28,16 @@ router.post('/:domain/:email',authenticateToken,async  (req, res) => {
             });
             
             await resp1.save();
+            
+    const update = {};
+    update[`Report.${domain}.round1`] = 0;
+    update[`Report.${domain}.round2`] = 0;
+    update[`Report.${domain}.round3`] = 0;
+    const updatedDetail = await Detail.findOneAndUpdate(
+        { EmailID: email },
+        { $set: update },
+        { new: true }
+    );
         }
     Question.findOne({domain: domain})
     .then (questionDoc => {

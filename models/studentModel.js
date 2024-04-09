@@ -29,21 +29,12 @@ const studentSchema = mongoose.Schema(
                 type: [String]
             }
         },
-        Report : {
-            round1 : {
-                type : Number,
-                default : 0
-            },
-            round2: {
-                type : Number,
-                default : 0
-            },
-            round3 : {
-                type : Number,
-                default : 0
-            },
+        Report: {
+            type: Object,
+            default: {},
+            required: true
         }
-}, {collection : 'Details'});
+}, { collection: 'Details' });
 
 const Detail = mongoose.model('Details', studentSchema);
 
