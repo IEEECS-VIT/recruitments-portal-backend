@@ -43,6 +43,7 @@ app.listen(PORT, () => {
   console.log(`Port is running at: ${PORT}`)
 });
 
+//Mongoose Connection
 mongoose.connect(process.env.mongoURL)
   .then(() => {
     console.log('connected to monogdb');
@@ -50,12 +51,12 @@ mongoose.connect(process.env.mongoURL)
   }).catch((error) => {
     console.log(error)
   });
+
+  let ans = 0;
 async function searchMail(emailId) {
   let ans = 0;
   try {
-    console.log("Connecting...");
     await client.connect();
-    console.log("Connected !!");
     const database = client.db('Members');
     const collection = database.collection('Details');
     const queryResult = await collection.findOne({ EmailID: emailId });
@@ -69,7 +70,6 @@ async function searchMail(emailId) {
   } catch (error) {
     ans = 2;
   } finally {
-    await client.close();
     return ans;
   }
 }
