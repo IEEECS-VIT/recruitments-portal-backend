@@ -15,8 +15,9 @@ router.get('/:domain', authAdmin, async (req, res) => {
     query[`Report.${domain}.round1`] = 0;
 
     try {
-        const documents = await Details.find(query); 
-        res.status(200).json(documents.EmailID); 
+        const documents = await Details.find(query);
+        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
+        res.status(200).json(emails); 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
