@@ -20,7 +20,7 @@ const app = express();
 app.use(cookieParser());
 const cors = require('cors');
 const corsOptions = {
-  origin: ['https://recruitments-portal-seven.vercel.app','https://enrollments.ieeecsvit.com/','http://localhost:3000','http://127.0.0.1:5500'],
+  origin: ['https://recruitments-portal-seven.vercel.app','https://enrollments.ieeecsvit.com','http://localhost:3000','http://127.0.0.1:5500'],
   credentials: true,
 };
 app.use(cors(corsOptions));
