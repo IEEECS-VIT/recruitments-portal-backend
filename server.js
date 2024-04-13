@@ -57,7 +57,7 @@ async function searchMail(emailId) {
   let ans = 0;
   try {
     await client.connect();
-    const database = client.db('test');
+    const database = client.db('Members');
     const collection = database.collection('Details');
     const queryResult = await collection.findOne({ EmailID: emailId });
 
