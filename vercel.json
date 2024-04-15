@@ -38,7 +38,7 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/:domain",
+      "source": "/:domain/none",
       "destination": "/api/index.js"
     }, 
     {
@@ -47,6 +47,14 @@
     },
     {
       "source": "/admin/questions/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/:domain/accepted",
+      "destination": "/api/index.js"
+    }, 
+    {
+      "source": "/:domain/rejected",
       "destination": "/api/index.js"
     }
   ]
