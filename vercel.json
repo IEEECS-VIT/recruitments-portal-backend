@@ -56,6 +56,10 @@
     {
       "source": "/:domain/rejected",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/profile/:email",
+      "destination": "/api/index.js"
     }
   ]
 }
