@@ -1,7 +1,8 @@
-const express = require ('express')
-const Admin = require('../models/adminModel')
-const Question = require('../models/questionModel')
-const pluralize = require('pluralize')
+const express = require ('express');
+const Detail = require('../models/studentModel');
+const Admin = require('../models/adminModel');
+const Question = require('../models/questionModel');
+const pluralize = require('pluralize');
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
 const router = express.Router();
@@ -61,6 +62,20 @@ router.post('/questions/:domain',authAdmin, (req, res) => {
         });
 });
 
+
+router.get('/profile/:email', authAdmin, (req, res) => {
+    const { email } = req.params;
+    Detail.findOne({ EmailID: email })
+        .then(details => {
+            if (details) {
+                res.status(200).json(details)
+            } else {
+                res.status(404).json({ message: "User not found" })
+            }
+        }).catch(error => {
+            res.status(500).json({ message: error.message })
+        })
+})
 
 
 module.exports = router;
