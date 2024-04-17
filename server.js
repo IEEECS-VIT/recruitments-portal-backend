@@ -179,56 +179,56 @@ app.get('/get_domains/:email', authenticateToken, async (req, res) => {
 
 
 
-// app.put('/put_domains/:domain/:email', authenticateToken, async (req, res) => {
-//   const { email, domain } = req.params;
-//   const newDomains = req.body[domain] || []
+app.put('/put_domains/:domain/:email', authenticateToken, async (req, res) => {
+  const { email, domain } = req.params;
+  const newDomains = req.body[domain] || []
 
-//   try {
-//     let detail = await Detail.findOne({ EmailID: email });
+  try {
+    let detail = await Detail.findOne({ EmailID: email });
 
-//     if (!detail) {
-//       throw new Error('Document not found');
-//     }
+    if (!detail) {
+      throw new Error('Document not found');
+    }
 
-//     if (!detail.Domains) {
-//       detail.Domains = {};
-//     }
+    if (!detail.Domains) {
+      detail.Domains = {};
+    }
 
-//     if (!detail.Domains[domain]) {
-//       detail.Domains[domain] = [];
-//     }
+    if (!detail.Domains[domain]) {
+      detail.Domains[domain] = [];
+    }
 
-//     const oldDomains = detail.Domains[domain] || [];
+    const oldDomains = detail.Domains[domain] || [];
 
-//     for (const domain of oldDomains) {
-//       const model = domainModels[domain];
-//       if (model) {
-//         await model.deleteOne({ EmailID: email });
-//       }
-//     }
+    for (const domain of oldDomains) {
+      const model = domainModels[domain];
+      if (model) {
+        await model.deleteOne({ EmailID: email });
+      }
+    }
 
-//     detail.Domains[domain] = newDomains;
-//     await detail.save();
+    detail.Domains[domain] = newDomains;
+    await detail.save();
 
-//     for (const domain of newDomains) {
-//       if (!domainModels[domain]) {
-//         const schema = new mongoose.Schema({ EmailID: String });
-//         domainModels[domain] = mongoose.model(domain, schema);
-//       }
-//       const model = domainModels[domain];
-//       const existingDoc = await model.findOne({ EmailID: email });
-//       if (!existingDoc) {
-//         const newDoc = await model.create({ EmailID: email });
-//       }
-//     }
+    for (const domain of newDomains) {
+      if (!domainModels[domain]) {
+        const schema = new mongoose.Schema({ EmailID: String });
+        domainModels[domain] = mongoose.model(domain, schema);
+      }
+      const model = domainModels[domain];
+      const existingDoc = await model.findOne({ EmailID: email });
+      if (!existingDoc) {
+        const newDoc = await model.create({ EmailID: email });
+      }
+    }
 
-//     res.status(200).json(detail);
-//   } catch (error) {
-//     console.error(`Error updating ${domain} domains:`, error);
-//     console.error(error.stack);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
+    res.status(200).json(detail);
+  } catch (error) {
+    console.error(`Error updating ${domain} domains:`, error);
+    console.error(error.stack);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 module.exports = app;
