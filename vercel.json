@@ -10,27 +10,11 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/put_domains/:domain/:email",
-      "destination": "/api/index.js"
-    },
-    {
       "source": "/profile/:email",
       "destination": "/api/index.js"
     },
     {
-      "source": "/question/:domain/:email",
-      "destination": "/api/index.js"
-    },
-    {
       "source": "/eval/set_report",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/response/submit",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/response/get_time/:domain/:email",
       "destination": "/api/index.js"
     },
     {
@@ -43,10 +27,6 @@
     }, 
     {
       "source": "/admin/check-user",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/admin/questions/:domain",
       "destination": "/api/index.js"
     },
     {
