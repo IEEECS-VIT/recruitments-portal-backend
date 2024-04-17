@@ -51,4 +51,4 @@ router.post('/:domain/:email',authenticateToken,async  (req, res) => {
     })
 });
 
-module.exports = router
+// module.exports = router
