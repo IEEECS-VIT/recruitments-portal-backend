@@ -3,7 +3,7 @@ const Question = require('../models/questionModel');
 const responses = require('../models/responseModel');
 const Detail = require('../models/studentModel');
 const mongoose = require('mongoose');
-const authenticateToken = require("./auth")
+const authenticateToken = require("../middleware/auth")
 const router = express.Router();
 
 router.post('/:domain/:email',authenticateToken,async  (req, res) => {

@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const authenticateToken = require('./auth');
+const authenticateToken = require('../middleware/auth');
 const Detail = require('../models/studentModel');
 const authAdmin = require('../middleware/authAdmin');
 const router = express.Router();
