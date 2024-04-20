@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const responseRound2Schema = mongoose.Schema({
+    email: {
+        type: String
+    },
     domain: {
         type: String,
         required: true,

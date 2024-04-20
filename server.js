@@ -15,6 +15,7 @@ const domainRoute = require('./routes/domainRoute');
 const questionRoute = require('./routes/questionRoute');
 const evalRoute = require('./routes/evalRoute');
 const Response = require('./models/responseModel');
+const round2Route = require('./routes/round2Route');
 const app = express();
 
 app.use(cookieParser());
@@ -32,6 +33,7 @@ app.use('/response', responseRoute);
 app.use('/', domainRoute);
 app.use('/eval', evalRoute);
 app.use('/question', questionRoute);
+app.use('/round2',round2Route)
 
 
 

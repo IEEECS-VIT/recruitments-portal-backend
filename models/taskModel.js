@@ -28,7 +28,13 @@ const taskSchema = mongoose.Schema({
         },
         meetLink: {
             type: String
-        }
+        },
+        teamMembers: [{
+            type: String
+        }],
+        supervisors: [{
+            type: String
+        }]
     }
 });
 
