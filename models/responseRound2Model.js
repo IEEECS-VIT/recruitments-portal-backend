@@ -10,24 +10,24 @@ const responseRound2Schema = mongoose.Schema({
     },
     easy:[{
         question: String,
-        links: [{
-            githubRepo: String, 
-            otherLink: String   
-        }] 
+        links: {
+            link1: String, 
+            link2: [String]   
+        }
     }],
     medium: [{
         question: String,
-        links: [{
-            githubRepo: String, 
-            otherLink: String   
-        }]
+        links: {
+            link1: String, 
+            link2: [String]   
+        }
     }],
     hard: [{
         question: String,
-        links: [{
-            githubRepo: String, 
-            otherLink: String   
-        }]
+        links: {
+            link1: String, 
+            link2: [String]   
+        }
     }]
 });
 
