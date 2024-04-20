@@ -49,6 +49,10 @@
     {
       "source":"/round2/tasks/:domain/:email",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/round2/submit",
+      "destination": "/api/index.js"
     }
   ]
 }

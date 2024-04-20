@@ -15,26 +15,6 @@ const taskSchema = mongoose.Schema({
         hard: [{
             type: String
         }]
-    },
-    team: {
-        teamName: {
-            type: String
-        },
-        date: {
-            type: String
-        },
-        time: {
-            type: String
-        },
-        meetLink: {
-            type: String
-        },
-        teamMembers: [{
-            type: String
-        }],
-        supervisors: [{
-            type: String
-        }]
     }
 });
 
