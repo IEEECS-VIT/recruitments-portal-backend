@@ -57,6 +57,46 @@
     {
       "source": "/round2/get_details/:email",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/get_details/round2/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/get-gd/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/create-gd",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/senior-core",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/senior-core/:action",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/response/round2/:email",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round2/none/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round2/rejected/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round2/accepted/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/check-user",
+      "destination": "/api/index.js"
     }
   ]
 }

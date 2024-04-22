@@ -55,4 +55,14 @@ router.get('/:email',authAdmin, (req, res) => {
         });
 });
 
+router.get('round2/:email',authAdmin, (req, res) => {
+    const { email } = req.params
+    Response.find({ email: email })
+        .then(responses => {
+            res.status(200).json(responses)
+        }).catch(error => {
+            res.status(500).json({ message: error.message })
+        });
+});
+
 module.exports = router;

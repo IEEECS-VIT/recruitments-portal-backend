@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-function authAdmin(req, res, next) {
+function authseniorcore(req, res, next) {
     const bearerHeader = req.headers['authorization'];
 
     if (!bearerHeader) {
@@ -12,7 +12,7 @@ function authAdmin(req, res, next) {
 
     const decoded = jwt.decode(token); 
 
-    jwt.verify(token, process.env.JWT_SECRET_ADMIN, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_SENIORCORE, (err, decoded) => {
         if (err) {
             console.log(err);
             return res.status(403).json({ message: 'Failed to authenticate token.' });
@@ -23,4 +23,4 @@ function authAdmin(req, res, next) {
     });
 }
 
-module.exports = authAdmin;
+module.exports = authseniorcore;
