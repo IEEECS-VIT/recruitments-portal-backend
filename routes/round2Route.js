@@ -70,14 +70,12 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
                 const round1Result = rounds.round1 === 0 ? "Pending" : rounds.round1 === 1 ? "Accepted" : "Rejected";
 
                 if (round1Result === "Accepted") {
-                    // Check if the user has submitted responses for this domain
                     const hasSubmittedResponses = await Response.findOne({ email, domain }).countDocuments() > 0;
 
                     return { domain, round1Result, hasSubmittedResponses };
                 }
             });
 
-            // Filter out undefined values (rejected domains)
             const acceptedDomains = (await Promise.all(modifiedData)).filter(data => data);
 
             console.log(acceptedDomains);
@@ -93,3 +91,4 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
 
 
 module.exports = router;
+

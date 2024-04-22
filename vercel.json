@@ -55,6 +55,10 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/round2/get_details/:email",
+      "destination": "/api/index.js"
+    },
+    {
       "source": "/admin/get_details/round2/:domain",
       "destination": "/api/index.js"
     },
