@@ -1,12 +1,13 @@
-const express = require ('express');
+const express = require('express');
 const Detail = require('../models/studentModel');
 const Admin = require('../models/adminModel');
 const Question = require('../models/questionModel');
 const pluralize = require('pluralize');
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
+const GD = require('../models/groupDiscussionModel')
 const router = express.Router();
-
+const seniorCore = require('../models/seniorCoreModel');
 const cookieParser = require('cookie-parser');
 router.use(cookieParser());
 
@@ -33,10 +34,10 @@ router.post('/check-user', async (req, res) => {
         .catch(error => {
             res.status(500).json({ message: "Internal Server Error", error: error.message });
         });
-        
+
 });
 
-router.post('/questions/:domain',authAdmin, (req, res) => {
+router.post('/questions/:domain', authAdmin, (req, res) => {
     const domain = req.params.domain;
     const { type, question, options } = req.body;
 
@@ -77,5 +78,121 @@ router.get('/profile/:email', authAdmin, (req, res) => {
         })
 })
 
+router.get('/get_details/round2/:domain', authAdmin, async (req, res) => {
+    const { email } = req.params;
+
+    try {
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+router.get('/get-gd/:domain' , authAdmin , async (req,res) => {
+    const domain = req.params.domain;
+    const gd = await GD.find({domain}).exec();
+    res.status(200).json(gd);
+});
+router.put('/create-gd', authAdmin, async (req, res) => {
+    try {
+        console.log("Inside create GD");
+        const { domain, teamName, date, time, meetLink, teamMembers, supervisors } = req.body;
+
+        if (!Array.isArray(teamMembers) || !Array.isArray(supervisors)) {
+            return res.status(400).json({ error: 'teamMembers and supervisors must be arrays' });
+        }
+        const existingTeam = await GD.findOne({ 'teamName': teamName  , 'domain' : domain});
+        if (existingTeam) {
+            return res.status(400).json({ error: 'A team with the same name in the domain already exists' });
+        }
+
+        const newTeam = new GD({
+            domain,
+            teamName,
+            date,
+            time,
+            meetLink,
+            teamMembers,
+            supervisors
+
+        });
+
+        await newTeam.save();
+
+        res.status(201).json({ message: 'Team created successfully' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/senior-core', authAdmin, async (req, res) => {
+    const seniorCoreRes = await seniorCore.find().exec();
+    res.status(200).json(seniorCoreRes);
+
+});
+
+router.post('/senior-core/:action', authAdmin, async (req, res) => {
+    const action = req.params.action;
+    const { email } = req.body;
+    if (action === 'add') {
+        const newSeniorCore = new seniorCore({
+            email
+        });
+        await newSeniorCore.save();
+        res.status(201).json({ message: 'Senior Core added successfully' });
+    } else if (action === 'remove') {
+        await seniorCore.deleteOne({ email });
+        res.status(200).json({ message: 'Senior Core removed successfully' });
+    } else {
+        res.status(400).json({ message: 'Invalid action' });
+    }
+});
+// Route to get details where round 1 = 1 and round 2 is none
+router.get("/round2/none/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+    const query = {};
+    query[`Report.${domain}.round1`] = 1;
+    query [`Report.${domain}.round2`] = 0;
+
+    try {
+        const documents = await Detail.find(query);
+        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
+        res.status(200).json(emails); 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Route to get details where round 1 = 0 (rejected)
+router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+    const query = {};
+    query[`Report.${domain}.round1`] = 1;
+    query [`Report.${domain}.round2`] = 2;
+
+    try {
+        const documents = await Detail.find(query);
+        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
+        res.status(200).json(emails); 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Route to get details where round 1 = 1 and round 2 = 1 (accepted)
+router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+    const query = {};
+    query[`Report.${domain}.round1`] = 1;
+    query [`Report.${domain}.round2`] = 1;
+
+    try {
+        const documents = await Detail.find(query);
+        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
+        res.status(200).json(emails); 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 module.exports = router;

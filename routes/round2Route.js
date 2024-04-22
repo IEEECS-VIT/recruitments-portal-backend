@@ -57,5 +57,39 @@ router.put('/submit', authenticateToken, async (req, res) => {
     }
 });
 
-module.exports = router;
+router.get("/get_details/:email", authenticateToken, async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const val = await Detail.findOne(
+            { EmailID: email }
+        );
+
+        if (val) {
+            const modifiedData = Object.entries(val.Report).map(async ([domain, rounds]) => {
+                const round1Result = rounds.round1 === 0 ? "Pending" : rounds.round1 === 1 ? "Accepted" : "Rejected";
+
+                if (round1Result === "Accepted") {
+                    // Check if the user has submitted responses for this domain
+                    const hasSubmittedResponses = await Response.findOne({ email, domain }).countDocuments() > 0;
+
+                    return { domain, round1Result, hasSubmittedResponses };
+                }
+            });
+
+            // Filter out undefined values (rejected domains)
+            const acceptedDomains = (await Promise.all(modifiedData)).filter(data => data);
+
+            console.log(acceptedDomains);
+
+            res.status(200).json({ message: 'Round 2 Details', round2: acceptedDomains });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 module.exports = router;
