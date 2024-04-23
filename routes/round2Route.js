@@ -90,12 +90,12 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/teamDetails/:email',authenticateToken, async (req, res) => {
+router.get('/teamDetails/:domain/:email',authenticateToken, async (req, res) => {
     const { email, domain } = req.params;
 
     try {
         const teamDetails = await GD.find(
-            { teamMembers: email},
+            { teamMembers: email, domain: domain },
             { domain: 1, teamName: 1, date: 1, time: 1, meetLink: 1, _id: 0 }
         );
 
