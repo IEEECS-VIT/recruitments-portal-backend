@@ -1,5 +1,6 @@
 const express = require('express');
 const seniorCore = require('../models/seniorCoreModel');
+const groupDiscussions = require('../models/groupDiscussionModel') 
 const authSeniorCore = require('../middleware/authsenior');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
@@ -32,5 +33,62 @@ router.post('/check-user', async (req, res) => {
 
 });
 
+
+router.get('/group-discussion/:domain/:email',authSeniorCore, async (req, res) => {
+    const {email, domain} = req.params;
+
+    try {
+        const discussion = await groupDiscussions.find({
+            domain: domain,
+            supervisors: { $in: [email] }
+        });
+
+        const teamName = discussion.map(discussion => discussion.teamName)
+
+        res.status(200).json(teamName)
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+})
+
+
+router.get('/teamDetails/:teamName/:domain',authSeniorCore, async (req, res) => {
+    const {teamName,domain} = req.params;
+
+    try {
+        const teamDetails = await groupDiscussions.findOne ({
+            domain: domain,
+            teamName: teamName
+        });
+
+        if(teamDetails) {
+            res.status(200).json(teamDetails)
+        } else {
+            res.status(404).json({ message: 'No team found with that name' });
+        }
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+})
+
+router.put('/meetLink',authSeniorCore, async (req, res) => {
+    const { teamName, domain, meetLink } = req.body;
+
+    try {
+        const updatedTeam = await groupDiscussions.findOneAndUpdate(
+            { teamName, domain },
+            { $set: { meetLink } },
+            { new: true, upsert: true }
+        );
+
+        if (updatedTeam) {
+            res.status(200).json(updatedTeam);
+        } else {
+            res.status(404).json({ message: 'No team found with that name' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;

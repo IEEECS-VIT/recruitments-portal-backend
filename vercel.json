@@ -97,6 +97,22 @@
     {
       "source": "/seniorcore/check-user",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/meetLink",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/group-discussion/:domain/:email",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/teamDetails/:teamName/:domian",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/round2/teamDetails/:domain/:email",
+      "destination": "/api/index.js"
     }
   ]
 }
