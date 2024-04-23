@@ -109,6 +109,10 @@
     {
       "source": "/seniorcore/teamDetails/:teamName/:domian",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/round2/teamDetails/:domain/:email",
+      "destination": "/api/index.js"
     }
   ]
 }
