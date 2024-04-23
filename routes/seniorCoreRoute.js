@@ -4,7 +4,7 @@ const groupDiscussions = require('../models/groupDiscussionModel')
 const authSeniorCore = require('../middleware/authsenior');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
-
+const Details = require('../models/studentModel');
 const cookieParser = require('cookie-parser');
 const authseniorcore = require('../middleware/authsenior');
 router.use(cookieParser());
@@ -97,7 +97,7 @@ router.post("/set_round2_gd", authseniorcore, async (req, res) => {
     update[`Report.${domain}.round${round}`] = result;
 
     try {
-        const updatedDetail = await Detail.findOneAndUpdate(
+        const updatedDetail = await Details.findOneAndUpdate(
             { EmailID: email },
             { $set: update },
             { new: true }
