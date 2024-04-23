@@ -93,7 +93,6 @@ router.put('/meetLink',authSeniorCore, async (req, res) => {
 });
 router.post("/set_round2_gd", authseniorcore, async (req, res) => {
     const { result, email, round, domain } = req.body;
-    round = 2;
     const update = {};
     update[`Report.${domain}.round${round}`] = result;
 
