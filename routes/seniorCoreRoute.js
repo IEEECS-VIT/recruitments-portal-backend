@@ -82,7 +82,7 @@ router.put('/meetLink',authSeniorCore, async (req, res) => {
         );
 
         if (updatedTeam) {
-            res.status(200).json(updatedTeam);
+            res.status(200).json({ message: 'Meet link updated successfully' });
         } else {
             res.status(404).json({ message: 'No team found with that name' });
         }
