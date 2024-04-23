@@ -95,7 +95,7 @@ router.get('/teamDetails/:domain/:email',authenticateToken, async (req, res) => 
 
     try {
         const teamDetails = await GD.find(
-            { teamMembers: email, domain: domain },
+            { teamMembers: { $regex: email }, domain: domain },
             { domain: 1, teamName: 1, date: 1, time: 1, meetLink: 1, _id: 0 }
         );
 
