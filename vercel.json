@@ -111,7 +111,7 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/round2/teamDetails/:email",
+      "source": "/round2/teamDetails/:domain/:email",
       "destination": "/api/index.js"
     }
   ]
