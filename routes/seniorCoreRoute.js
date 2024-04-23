@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 const cookieParser = require('cookie-parser');
+const authseniorcore = require('../middleware/authsenior');
 router.use(cookieParser());
 
 router.post('/check-user', async (req, res) => {
@@ -90,5 +91,26 @@ router.put('/meetLink',authSeniorCore, async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+router.post("/set_round2_gd", authseniorcore, async (req, res) => {
+    const { result, email, round, domain } = req.body;
+    round = 2;
+    const update = {};
+    update[`Report.${domain}.round${round}`] = result;
 
+    try {
+        const updatedDetail = await Detail.findOneAndUpdate(
+            { EmailID: email },
+            { $set: update },
+            { new: true }
+        );
+
+        if (updatedDetail) {
+            res.status(200).json({ message: 'Round details updated successfully', updatedDetail });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 module.exports = router;
