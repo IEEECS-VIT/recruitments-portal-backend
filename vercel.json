@@ -113,6 +113,10 @@
     {
       "source": "/round2/teamDetails/:domain/:email",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/set_round2_gd",
+      "destination": "/api/index.js"
     }
   ]
 }
