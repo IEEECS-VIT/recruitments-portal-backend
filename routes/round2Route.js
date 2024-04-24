@@ -68,6 +68,7 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
 
         if (val) {
             const modifiedData = Object.entries(val.Report).map(async ([domain, rounds]) => {
+                if (domain === 'pnm') return;
                 const round1Result = rounds.round1 === 0 ? "Pending" : rounds.round1 === 1 ? "Accepted" : "Rejected";
 
                 if (round1Result === "Accepted") {
@@ -79,7 +80,7 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
 
             const acceptedDomains = (await Promise.all(modifiedData)).filter(data => data);
 
-            console.log(acceptedDomains);
+            // console.log(acceptedDomains);
 
             res.status(200).json({ message: 'Round 2 Details', round2: acceptedDomains });
         } else {
