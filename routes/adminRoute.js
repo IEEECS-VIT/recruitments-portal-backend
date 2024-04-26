@@ -149,96 +149,88 @@ router.post('/senior-core/:action', authAdmin, async (req, res) => {
 });
 // Route to get details where round 1 = 1 and round 2 is none
 router.get("/round2/none/:domain", authAdmin, async (req, res) => {
-    const { domain } = req.params;
-    const query = {};
-    query[`Report.${domain}.round1`] = 1;
-    query[`Report.${domain}.round2`] = 0;
-    if(domain === 'events' || domain === "pnm"){
-        const documents = await Detail.find(query);
-        res.status(200).json(documents);
-    }else{
-    try {
-      const documents = await Detail.find(query);
-      const emailIds = [];
-  
-      for (const doc of documents) {
-        const existingEmail = await responseRound2.findOne({
-          domain,
-          email: doc.EmailID,
-        });
-  
-        if (existingEmail) {
-          emailIds.push({ EmailID: doc.EmailID });
-        }
-      }
-  
-      res.status(200).json(emailIds);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-}
-  });
-  
-  // Route to get details where round 1 = 0 (rejected)
-  router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
-    const { domain } = req.params;
-    const query = {};
-    query[`Report.${domain}.round1`] = 1;
-    query[`Report.${domain}.round2`] = 2;
-    if(domain === 'events' || domain === "pnm"){
-        const documents = await Detail.find(query);
-        res.status(200).json(documents);
-    }else{
-    try {
-      const documents = await Detail.find(query);
-      const emailIds = [];
-  
-      for (const doc of documents) {
-        const existingEmail = await responseRound2.findOne({
-          domain,
-          email: doc.EmailID,
-        });
-  
-        if (existingEmail) {
-          emailIds.push({ EmailID: doc.EmailID });
-        }
-      }
-  
-      res.status(200).json(emailIds);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }}
-  });
-  
-  // Route to get details where round 1 = 1 and round 2 = 1 (accepted)
-  router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
-    const { domain } = req.params;
-    const query = {};
-    query[`Report.${domain}.round1`] = 1;
-    query[`Report.${domain}.round2`] = 1;
-    if(domain === 'events' || domain === "pnm"){
-        const documents = await Detail.find(query);
-        res.status(200).json(documents);
-    }else{
-    try {
-      const documents = await Detail.find(query);
-      const emailIds = [];
-  
-      for (const doc of documents) {
-        const existingEmail = await responseRound2.findOne({
-          domain,
-          email: doc.EmailID,
-        });
-  
-        if (existingEmail) {
-          emailIds.push({ EmailID: doc.EmailID });
-        }
-      }
-  
-      res.status(200).json(emailIds);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }}
-  });
+  const { domain } = req.params;
+  const query = {};
+  query[`Report.${domain}.round1`] = 1;
+  query[`Report.${domain}.round2`] = 0;
 
+  try {
+    const emails = await responseRound2.find({ domain }, { email: 1, _id: 0 });
+    const emailsArray = emails.map((doc) => doc.email);
+
+    if (domain === "events" || domain === "pnm") {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    } else {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Route to get details where round 1 = 0 (rejected)
+router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
+  const { domain } = req.params;
+  const query = {};
+  query[`Report.${domain}.round1`] = 1;
+  query[`Report.${domain}.round2`] = 2;
+
+  try {
+    const emails = await responseRound2.find({ domain }, { email: 1, _id: 0 });
+    const emailsArray = emails.map((doc) => doc.email);
+
+    if (domain === "events" || domain === "pnm") {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    } else {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Route to get details where round 1 = 1 and round 2 = 1 (accepted)
+router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
+  const { domain } = req.params;
+  const query = {};
+  query[`Report.${domain}.round1`] = 1;
+  query[`Report.${domain}.round2`] = 1;
+
+  try {
+    const emails = await responseRound2.find({ domain }, { email: 1, _id: 0 });
+    const emailsArray = emails.map((doc) => doc.email);
+
+    if (domain === "events" || domain === "pnm") {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    } else {
+      const documents = await Detail.find({
+        EmailID: { $in: emailsArray },
+        ...query,
+      });
+      res.status(200).json(documents);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;
