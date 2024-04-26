@@ -2,7 +2,7 @@ const express = require('express');
 const Detail = require('../models/studentModel');
 const Admin = require('../models/adminModel');
 const Question = require('../models/questionModel');
-const pluralize = require('pluralize');
+const responseRound2 = require('../models/responseRound2Model');
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
 const GD = require('../models/groupDiscussionModel')
@@ -152,47 +152,93 @@ router.get("/round2/none/:domain", authAdmin, async (req, res) => {
     const { domain } = req.params;
     const query = {};
     query[`Report.${domain}.round1`] = 1;
-    query [`Report.${domain}.round2`] = 0;
-
-    try {
+    query[`Report.${domain}.round2`] = 0;
+    if(domain === 'events' || domain === "pnm"){
         const documents = await Detail.find(query);
-        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
-        res.status(200).json(emails); 
+        res.status(200).json(documents);
+    }else{
+    try {
+      const documents = await Detail.find(query);
+      const emailIds = [];
+  
+      for (const doc of documents) {
+        const existingEmail = await responseRound2.findOne({
+          domain,
+          email: doc.EmailID,
+        });
+  
+        if (existingEmail) {
+          emailIds.push({ EmailID: doc.EmailID });
+        }
+      }
+  
+      res.status(200).json(emailIds);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
-});
-
-// Route to get details where round 1 = 0 (rejected)
-router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
+}
+  });
+  
+  // Route to get details where round 1 = 0 (rejected)
+  router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
     const { domain } = req.params;
     const query = {};
     query[`Report.${domain}.round1`] = 1;
-    query [`Report.${domain}.round2`] = 2;
-
-    try {
+    query[`Report.${domain}.round2`] = 2;
+    if(domain === 'events' || domain === "pnm"){
         const documents = await Detail.find(query);
-        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
-        res.status(200).json(emails); 
+        res.status(200).json(documents);
+    }else{
+    try {
+      const documents = await Detail.find(query);
+      const emailIds = [];
+  
+      for (const doc of documents) {
+        const existingEmail = await responseRound2.findOne({
+          domain,
+          email: doc.EmailID,
+        });
+  
+        if (existingEmail) {
+          emailIds.push({ EmailID: doc.EmailID });
+        }
+      }
+  
+      res.status(200).json(emailIds);
     } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Route to get details where round 1 = 1 and round 2 = 1 (accepted)
-router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
+      res.status(500).json({ message: error.message });
+    }}
+  });
+  
+  // Route to get details where round 1 = 1 and round 2 = 1 (accepted)
+  router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
     const { domain } = req.params;
     const query = {};
     query[`Report.${domain}.round1`] = 1;
-    query [`Report.${domain}.round2`] = 1;
-
-    try {
+    query[`Report.${domain}.round2`] = 1;
+    if(domain === 'events' || domain === "pnm"){
         const documents = await Detail.find(query);
-        const emails = documents.map(doc => ({EmailID: doc.EmailID})) 
-        res.status(200).json(emails); 
+        res.status(200).json(documents);
+    }else{
+    try {
+      const documents = await Detail.find(query);
+      const emailIds = [];
+  
+      for (const doc of documents) {
+        const existingEmail = await responseRound2.findOne({
+          domain,
+          email: doc.EmailID,
+        });
+  
+        if (existingEmail) {
+          emailIds.push({ EmailID: doc.EmailID });
+        }
+      }
+  
+      res.status(200).json(emailIds);
     } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+      res.status(500).json({ message: error.message });
+    }}
+  });
 
 module.exports = router;
