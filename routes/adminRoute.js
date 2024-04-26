@@ -159,11 +159,7 @@ router.get("/round2/none/:domain", authAdmin, async (req, res) => {
     const emailsArray = emails.map((doc) => doc.email);
 
     if (domain === "events" || domain === "pnm") {
-      const documents = await Detail.find({
-        EmailID: { $in: emailsArray },
-        ...query,
-      });
-      res.status(200).json(documents);
+        const documents = await Detail.find(query); res.status(200).json(documents); 
     } else {
       const documents = await Detail.find({
         EmailID: { $in: emailsArray },
@@ -188,11 +184,7 @@ router.get("/round2/rejected/:domain", authAdmin, async (req, res) => {
     const emailsArray = emails.map((doc) => doc.email);
 
     if (domain === "events" || domain === "pnm") {
-      const documents = await Detail.find({
-        EmailID: { $in: emailsArray },
-        ...query,
-      });
-      res.status(200).json(documents);
+        const documents = await Detail.find(query); res.status(200).json(documents); 
     } else {
       const documents = await Detail.find({
         EmailID: { $in: emailsArray },
@@ -217,11 +209,7 @@ router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
     const emailsArray = emails.map((doc) => doc.email);
 
     if (domain === "events" || domain === "pnm") {
-      const documents = await Detail.find({
-        EmailID: { $in: emailsArray },
-        ...query,
-      });
-      res.status(200).json(documents);
+        const documents = await Detail.find(query); res.status(200).json(documents); 
     } else {
       const documents = await Detail.find({
         EmailID: { $in: emailsArray },
