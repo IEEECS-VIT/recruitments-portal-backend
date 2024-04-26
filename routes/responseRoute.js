@@ -3,7 +3,7 @@ const Response = require('../models/responseModel');
 const authenticateToken = require("../middleware/auth");
 const authAdmin = require('../middleware/authAdmin')
 const router = express.Router();
-
+const responseRound2 = require('../models/responseRound2Model');
 router.patch('/submit', authenticateToken, async (req, res) => {
     const { email, domain, questions } = req.body;
 
@@ -48,6 +48,16 @@ router.get('/get_time/:domain/:email', async (req, res) => {
 router.get('/:email',authAdmin, (req, res) => {
     const { email } = req.params
     Response.find({ email: email })
+        .then(responses => {
+            res.status(200).json(responses)
+        }).catch(error => {
+            res.status(500).json({ message: error.message })
+        });
+});
+
+router.get('/round2/:email',authAdmin, (req, res) => {
+    const { email } = req.params
+    responseRound2.find({ email: email })
         .then(responses => {
             res.status(200).json(responses)
         }).catch(error => {
