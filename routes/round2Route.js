@@ -3,6 +3,7 @@ const Tasks = require('../models/taskModel')
 const Response = require('../models/responseRound2Model')
 const Detail = require('../models/studentModel') 
 const GD = require('../models/groupDiscussionModel')
+const selected = require('../models/selectedModel')
 const authenticateToken = require('../middleware/auth')
 const router = express.Router();
 
@@ -68,7 +69,7 @@ router.get("/get_details/:email", authenticateToken, async (req, res) => {
 
         if (val) {
             const modifiedData = Object.entries(val.Report).map(async ([domain, rounds]) => {
-                if (domain === 'pnm') return;
+                
                 const round1Result = rounds.round1 === 0 ? "Pending" : rounds.round1 === 1 ? "Accepted" : "Rejected";
 
                 if (round1Result === "Accepted") {
@@ -95,6 +96,11 @@ router.get('/teamDetails/:domain/:email',authenticateToken, async (req, res) => 
     const { email, domain } = req.params;
 
     try {
+        if (domain === 'pnm') {
+            const isEmailSelected = await selected.findOne({ email: email, domain: 'pnm' }) != null;
+            return res.status(200).json({ domain, isSelected: isEmailSelected });
+        }
+
         const teamDetails = await GD.find(
             { teamMembers: email, domain: domain },
             { domain: 1, teamName: 1, date: 1, time: 1, meetLink: 1, _id: 0 }
