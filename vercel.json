@@ -119,11 +119,11 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/admin/get-gd/round3/:domain",
+      "source": "/seniorcore/get-gd/round3/:domain",
       "destination": "/api/index.js"
     },
     {
-      "source": "/admin/create-gd/round3",
+      "source": "/seniorcore/create-gd/round3",
       "destination": "/api/index.js"
     },
     {
