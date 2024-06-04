@@ -193,6 +193,12 @@ router.post("/set_round3_gd", authseniorcore, async (req, res) => {
     }
 });
 
+router.get('/get-gd/round3/:domain', authSeniorCore, async (req, res) => {
+    const domain = req.params.domain;
+    const gd = await r3GD.find({ domain }).exec();
+    res.status(200).json(gd);
+});
+
 router.put('/create-gd/round3', authSeniorCore, async (req, res) => {
     try {
         console.log("Inside create GD");

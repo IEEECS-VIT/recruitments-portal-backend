@@ -94,12 +94,6 @@ router.get('/get-gd/:domain' , authAdmin , async (req,res) => {
     res.status(200).json(gd);
 });
 
-router.get('/get-gd/round3/:domain' , authAdmin , async (req,res) => {
-    const domain = req.params.domain;
-    const gd = await r3GD.find({domain}).exec();
-    res.status(200).json(gd);
-});
-
 router.put('/create-gd', authAdmin, async (req, res) => {
     try {
         console.log("Inside create GD");
