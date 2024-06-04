@@ -46,7 +46,7 @@ const domainModels = {};
 
 const PORT = process.env.PORT || 4030;
 app.listen(PORT, () => {
-  console.log(`Port is running at: ${PORT}`)
+  console.log(`Port running at http://localhost:${PORT}`)
 });
 
 //Mongoose Connection

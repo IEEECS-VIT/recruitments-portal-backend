@@ -133,39 +133,6 @@ router.put('/create-gd', authAdmin, async (req, res) => {
     }
 });
 
-router.put('/create-gd/round3', authAdmin, async (req, res) => {
-    try {
-        console.log("Inside create GD");
-        const { domain, teamName, date, time, meetLink, teamMembers, supervisors } = req.body;
-
-        if (!Array.isArray(teamMembers) || !Array.isArray(supervisors)) {
-            return res.status(400).json({ error: 'teamMembers and supervisors must be arrays' });
-        }
-        const existingTeam = await r3GD.findOne({ 'teamName': teamName  , 'domain' : domain});
-        if (existingTeam) {
-            return res.status(400).json({ error: 'A team with the same name in the domain already exists' });
-        }
-
-        const newTeam = new GD({
-            domain,
-            teamName,
-            date,
-            time,
-            meetLink,
-            teamMembers,
-            supervisors
-
-        });
-
-        await newTeam.save();
-
-        res.status(201).json({ message: 'Team created successfully' });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
 router.get('/senior-core', authAdmin, async (req, res) => {
     const seniorCoreRes = await seniorCore.find().exec();
     res.status(200).json(seniorCoreRes);
