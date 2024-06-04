@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const GDSchema = mongoose.Schema({
+const R3GDSchema = mongoose.Schema({
     domain: {
         type: String,
         required: true,
@@ -26,6 +26,6 @@ const GDSchema = mongoose.Schema({
 
 });
 
-const GD = mongoose.model('groupdiscussion', GDSchema);
+const R3GD = mongoose.model('R3GD', R3GDSchema);
 
-module.exports = GD;
+module.exports = R3GD;
