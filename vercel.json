@@ -117,6 +117,34 @@
     {
       "source": "/seniorcore/set_round2_gd",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/get-gd/round3/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/create-gd/round3",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/group-discussion/round3/:domain/:email",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/teamDetails/round3/:teamName/:domian",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/meetLink/round3",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/seniorcore/set_round3_gd",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/round2/teamDetails/round3/:domain/:email",
+      "destination": "/api/index.js"
     }
   ]
 }

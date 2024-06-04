@@ -6,6 +6,7 @@ const responseRound2 = require('../models/responseRound2Model');
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
 const GD = require('../models/groupDiscussionModel')
+const r3GD = require('../models/round3GDModel')
 const router = express.Router();
 const seniorCore = require('../models/seniorCoreModel');
 const cookieParser = require('cookie-parser');
@@ -92,6 +93,13 @@ router.get('/get-gd/:domain' , authAdmin , async (req,res) => {
     const gd = await GD.find({domain}).exec();
     res.status(200).json(gd);
 });
+
+router.get('/get-gd/round3/:domain' , authAdmin , async (req,res) => {
+    const domain = req.params.domain;
+    const gd = await r3GD.find({domain}).exec();
+    res.status(200).json(gd);
+});
+
 router.put('/create-gd', authAdmin, async (req, res) => {
     try {
         console.log("Inside create GD");
@@ -101,6 +109,39 @@ router.put('/create-gd', authAdmin, async (req, res) => {
             return res.status(400).json({ error: 'teamMembers and supervisors must be arrays' });
         }
         const existingTeam = await GD.findOne({ 'teamName': teamName  , 'domain' : domain});
+        if (existingTeam) {
+            return res.status(400).json({ error: 'A team with the same name in the domain already exists' });
+        }
+
+        const newTeam = new GD({
+            domain,
+            teamName,
+            date,
+            time,
+            meetLink,
+            teamMembers,
+            supervisors
+
+        });
+
+        await newTeam.save();
+
+        res.status(201).json({ message: 'Team created successfully' });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.put('/create-gd/round3', authAdmin, async (req, res) => {
+    try {
+        console.log("Inside create GD");
+        const { domain, teamName, date, time, meetLink, teamMembers, supervisors } = req.body;
+
+        if (!Array.isArray(teamMembers) || !Array.isArray(supervisors)) {
+            return res.status(400).json({ error: 'teamMembers and supervisors must be arrays' });
+        }
+        const existingTeam = await r3GD.findOne({ 'teamName': teamName  , 'domain' : domain});
         if (existingTeam) {
             return res.status(400).json({ error: 'A team with the same name in the domain already exists' });
         }

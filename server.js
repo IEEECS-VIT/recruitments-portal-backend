@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require('mongoose');
 require('dotenv').config();
+const r3GD = require('./models/round3GDModel');
 const mongoURL = process.env.mongoURL;
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(mongoURL);
