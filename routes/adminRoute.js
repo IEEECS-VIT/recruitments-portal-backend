@@ -146,7 +146,7 @@ router.put('/create-gd/round3', authAdmin, async (req, res) => {
             return res.status(400).json({ error: 'A team with the same name in the domain already exists' });
         }
 
-        const newTeam = new GD({
+        const newTeam = new r3GD({
             domain,
             teamName,
             date,
