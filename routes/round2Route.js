@@ -1,6 +1,7 @@
 const express = require('express')
 const Tasks = require('../models/taskModel')
 const Response = require('../models/responseRound2Model')
+const r3GD = require('../models/round3GDModel')
 const Detail = require('../models/studentModel') 
 const GD = require('../models/groupDiscussionModel')
 const selected = require('../models/selectedModel')
@@ -102,6 +103,25 @@ router.get('/teamDetails/:domain/:email',authenticateToken, async (req, res) => 
         }
 
         const teamDetails = await GD.find(
+            { teamMembers: { $regex: email }, domain: domain },
+            { domain: 1, teamName: 1, date: 1, time: 1, meetLink: 1, _id: 0 }
+        );
+
+        if (teamDetails.length > 0) {
+            res.status(200).json(teamDetails);
+        } else {
+            res.status(404).json({ message: 'No team found with that email' });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.get('/teamDetails/round3/:domain/:email',authenticateToken, async (req, res) => {
+    const { email, domain } = req.params;
+
+    try {
+        const teamDetails = await r3GD.find(
             { teamMembers: { $regex: email }, domain: domain },
             { domain: 1, teamName: 1, date: 1, time: 1, meetLink: 1, _id: 0 }
         );

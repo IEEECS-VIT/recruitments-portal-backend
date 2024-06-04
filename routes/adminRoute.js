@@ -6,6 +6,7 @@ const responseRound2 = require('../models/responseRound2Model');
 const jwt = require('jsonwebtoken');
 const authAdmin = require('../middleware/authAdmin');
 const GD = require('../models/groupDiscussionModel')
+const r3GD = require('../models/round3GDModel')
 const router = express.Router();
 const seniorCore = require('../models/seniorCoreModel');
 const cookieParser = require('cookie-parser');
@@ -92,6 +93,7 @@ router.get('/get-gd/:domain' , authAdmin , async (req,res) => {
     const gd = await GD.find({domain}).exec();
     res.status(200).json(gd);
 });
+
 router.put('/create-gd', authAdmin, async (req, res) => {
     try {
         console.log("Inside create GD");
