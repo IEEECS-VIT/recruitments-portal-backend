@@ -17,6 +17,7 @@ const questionRoute = require('./routes/questionRoute');
 const evalRoute = require('./routes/evalRoute');
 const GD = require('./models/groupDiscussionModel');
 const Response = require('./models/responseModel');
+const round3Route = require('./routes/round3Route');
 const round2route = require('./routes/round2Route');
 const seniorCoreRoute = require('./routes/seniorCoreRoute')
 const app = express();
@@ -37,6 +38,7 @@ app.use('/', domainRoute);
 app.use('/eval', evalRoute);
 app.use('/question', questionRoute);
 app.use('/round2', round2route);
+app.use('/round3', round3Route);
 app.use('/seniorcore',seniorCoreRoute)
 
 

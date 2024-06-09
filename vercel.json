@@ -145,6 +145,10 @@
     {
       "source": "/round2/teamDetails/round3/:domain/:email",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/round3/get_details/:email",
+      "destination": "/api/index.js"
     }
   ]
 }
