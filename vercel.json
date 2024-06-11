@@ -149,6 +149,18 @@
     {
       "source": "/round3/get_details/:email",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round3/none/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round3/rejected/:domain",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/admin/round3/accepted/:domain",
+      "destination": "/api/index.js"
     }
   ]
 }

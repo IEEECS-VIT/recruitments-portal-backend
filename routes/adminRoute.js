@@ -223,4 +223,47 @@ router.get("/round2/accepted/:domain", authAdmin, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get("/round3/none/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+
+    try {
+      const emails = await Detail.find(
+        { [`Report.${domain}.round2`]: 1, [`Report.${domain}.round3`]: 0 },
+        { EmailID: 1, _id: 0 }
+      );
+      res.status(200).json(emails);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Route to get emails where round 2 = 1 and round 3 = 2 (rejected)
+  router.get("/round3/rejected/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+
+    try {
+      const emails = await Detail.find(
+        { [`Report.${domain}.round2`]: 1, [`Report.${domain}.round3`]: 2 },
+        { EmailID: 1, _id: 0 }
+      );
+      res.status(200).json(emails);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Route to get emails where round 2 = 1 and round 3 = 1 (accepted)
+  router.get("/round3/accepted/:domain", authAdmin, async (req, res) => {
+    const { domain } = req.params;
+
+    try {
+      const emails = await Detail.find(
+        { [`Report.${domain}.round2`]: 1, [`Report.${domain}.round3`]: 1 },
+        { EmailID: 1, _id: 0 }
+      );
+      res.status(200).json(emails);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
 module.exports = router;
